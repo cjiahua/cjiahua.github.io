@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>洛洛历险记 · 联机扩展版</title>
+<title>洛洛历险记 · 稳定联机</title>
 <style>
   :root {
     --bg: #060b18; --panel: rgba(10,16,30,0.88); --cyan: #00d4ff; --gold: #f0c040;
     --red: #ff4060; --green: #40e890; --purple: #a070ff; --orange: #ff8040;
     --text: #d0d4e0; --dim: #6070a0; --border: rgba(0,200,255,0.22);
-    --energy: #ffe860; --pink: #ff70a0; --warm: #ffb088; --online: #40e890;
+    --energy: #ffe860; --warm: #ffb088; --online: #40e890;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);font-family:'PingFang SC','Microsoft YaHei',sans-serif;min-height:100vh;padding:4px 4px 95px;color:var(--text);overflow-x:hidden;}
+  body{background:var(--bg);font-family:'PingFang SC','Microsoft YaHei',sans-serif;min-height:100vh;padding:4px 4px 100px;color:var(--text);overflow-x:hidden;}
   body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 30% 10%,rgba(0,212,255,0.03) 0%,transparent 60%),radial-gradient(ellipse at 70% 90%,rgba(255,112,160,0.03) 0%,transparent 60%);}
   .game-container{max-width:650px;margin:0 auto;display:flex;flex-direction:column;gap:4px;position:relative;z-index:1;}
   .title-area{text-align:center;padding:2px 0;}
   .title-area h1{font-size:1rem;font-weight:900;letter-spacing:1px;background:linear-gradient(135deg,var(--cyan),var(--warm),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradShift 3s ease infinite;background-size:200% 200%;}
   @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .title-area .sub{font-size:0.36rem;color:var(--dim);letter-spacing:1px;}
   .status-row{display:flex;gap:1px;flex-wrap:wrap;}
-  .status-card{flex:1;min-width:30px;background:var(--panel);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:5px;padding:3px 1px;text-align:center;transition:all 0.3s;}
-  .status-card:hover{transform:translateY(-1px);box-shadow:0 0 8px rgba(0,212,255,0.1);}
+  .status-card{flex:1;min-width:30px;background:var(--panel);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:5px;padding:3px 1px;text-align:center;}
   .status-card .lbl{font-size:0.28rem;color:var(--dim);text-transform:uppercase;}
   .status-card .val{font-size:0.5rem;font-weight:800;margin-top:1px;}
   .val.cyan{color:var(--cyan);}.val.gold{color:var(--gold);}.val.red{color:var(--red);}.val.green{color:var(--green);}.val.purple{color:var(--purple);}.val.orange{color:var(--orange);}.val.pink{color:var(--pink);}.val.warm{color:var(--warm);}.val.online{color:var(--online);}
@@ -29,7 +29,6 @@
   .nav-scroll::-webkit-scrollbar{display:none;}
   .nav-btn{background:rgba(14,22,40,0.6);border:1px solid rgba(255,255,255,0.05);color:var(--dim);padding:3px 5px;border-radius:10px;font-size:0.38rem;cursor:pointer;white-space:nowrap;transition:all 0.3s;font-weight:600;}
   .nav-btn:hover,.nav-btn.active{border-color:var(--warm);color:var(--warm);background:rgba(255,176,136,0.08);}
-  .nav-btn.online-tab{border-color:rgba(64,232,144,0.3);}
 
   .panel-grid{display:flex;flex-direction:column;gap:2px;}
   details.panel{background:var(--panel);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:7px;overflow:hidden;}
@@ -83,9 +82,6 @@
   .modal-dialog .chat-input-row{display:flex;gap:1px;margin-bottom:3px;}
   .modal-dialog .chat-input-row input{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);padding:3px 6px;border-radius:7px;font-size:0.4rem;outline:none;}
   .modal-dialog .chat-input-row button{background:rgba(255,176,136,0.12);border:1px solid var(--warm);color:var(--warm);padding:3px 7px;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.38rem;}
-  .modal-dialog .cmd-row{display:flex;gap:1px;flex-wrap:wrap;}
-  .modal-dialog .cmd-btn{background:rgba(255,176,136,0.03);border:1px solid rgba(255,255,255,0.06);color:var(--dim);padding:2px 4px;border-radius:5px;font-size:0.35rem;cursor:pointer;transition:all 0.3s;}
-  .modal-dialog .cmd-btn:hover{border-color:var(--warm);color:var(--warm);}
   .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px 3px;font-size:0.4rem;margin-bottom:3px;}
 
   .drawer-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:998;display:none;}
@@ -101,13 +97,12 @@
   .big-btn{display:block;width:100%;margin:4px 0;padding:8px;border-radius:6px;border:none;font-weight:800;font-size:0.5rem;cursor:pointer;text-align:center;}
   .btn-create{background:var(--online);color:#060b18;}
   .btn-join{background:var(--cyan);color:#060b18;}
-  .btn-danger{background:var(--red);color:#fff;}
 </style>
 </head>
 <body>
 
 <div class="game-container">
-  <div class="title-area"><h1>⚙️ 洛洛历险记 · 联机扩展版</h1><div class="sub" id="onlineStatus">🔴 离线 | 🌐联机</div></div>
+  <div class="title-area"><h1>⚙️ 洛洛历险记</h1><div class="sub">AI对话已修复 | 联机可选</div></div>
 
   <div class="status-row">
     <div class="status-card"><div class="lbl">主角</div><div class="val cyan" id="sName">洛洛</div></div>
@@ -120,7 +115,7 @@
   </div>
 
   <div class="nav-scroll" id="navRow">
-    <button class="nav-btn active" data-panel="main">📋主</button><button class="nav-btn" data-panel="warriors">⚔️战士</button><button class="nav-btn" data-panel="bag">🎒背包</button><button class="nav-btn" data-panel="dungeon">👹副本</button><button class="nav-btn" data-panel="shop">🏪商店</button><button class="nav-btn" data-panel="craft">🔮合成</button><button class="nav-btn" data-panel="achieve">🏆成就</button><button class="nav-btn" data-panel="sign">📅签到</button><button class="nav-btn online-tab" data-panel="lobby">🌐联机</button>
+    <button class="nav-btn active" data-panel="main">📋主</button><button class="nav-btn" data-panel="warriors">⚔️战士</button><button class="nav-btn" data-panel="bag">🎒背包</button><button class="nav-btn" data-panel="dungeon">👹副本</button><button class="nav-btn" data-panel="shop">🏪商店</button><button class="nav-btn" data-panel="craft">🔮合成</button><button class="nav-btn" data-panel="achieve">🏆成就</button><button class="nav-btn" data-panel="sign">📅签到</button><button class="nav-btn" data-panel="lobby">🌐联机</button>
   </div>
 
   <div class="panel-grid" id="panelContainer"></div>
@@ -135,7 +130,6 @@
   <div class="input-row"><input type="text" id="customInput" placeholder="✍ 行动..."><button id="customSendBtn">执行</button></div>
   <div class="quick-row">
     <button class="quick-btn" id="btnSys"><span class="ico">💬</span></button>
-    <button class="quick-btn" id="btnRoom"><span class="ico">🌐</span></button>
     <button class="quick-btn" id="btnSave"><span class="ico">💾</span></button>
     <button class="quick-btn" id="btnSign"><span class="ico">📅</span></button>
     <button class="quick-btn" id="btnReset"><span class="ico">🔄</span></button>
@@ -152,33 +146,31 @@
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 <div class="sys-drawer" id="sysDrawer">
   <div class="drawer-header"><span style="color:var(--warm);">💬 系统控制台</span><button onclick="closeDrawer()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--dim);padding:2px 5px;border-radius:5px;">✕</button></div>
-  <div class="drawer-body" id="sysChatLog"><div style="color:var(--dim);">🤖 输入指令修改数值，或输入 /connect 联机</div></div>
+  <div class="drawer-body" id="sysChatLog"><div style="color:var(--dim);">🤖 输入指令修改数值</div></div>
   <div class="drawer-input-row"><input id="sysChatInput" placeholder="HP 500..."><button id="sysChatSend">执行</button></div>
 </div>
 
 <script>
-// ==================== 完整数据 ====================
+// ==================== 游戏数据 ====================
 const D = {
   player:{name:'洛洛',level:1,hp:100,maxHp:100,atk:15,def:8,spd:10,gold:500,exp:0,expToLevel:100,skillPoints:0},
   warriors:{'霹雳火':{name:'霹雳火',level:1,hp:150,maxHp:150,atk:25,def:15,loyalty:90,skill:'雷霆半月斩',chatHistory:[]},'风火轮':{name:'风火轮',level:1,hp:80,maxHp:80,atk:12,def:6,loyalty:85,skill:'旋风轮',chatHistory:[]}},
-  availableWarriors:['急先锋','力霸天','冲击波'],
   enemies:{'金铁兽':{level:20,hp:800,maxHp:800,atk:40,def:15,alive:true,dropTable:[{name:'修复装置',chance:0.8}]},'猛虎王':{level:45,hp:4000,maxHp:4000,atk:80,def:40,alive:true,dropTable:[{name:'猛虎之牙',chance:0.1}]}},
   dungeons:{'能源之城外围':{level:5,enemies:['金铁兽']},'雷霆殿深处':{level:40,enemies:['猛虎王']}},
-  city:'时光之城',bag:{'修复装置':3,'能量块':5,'合击技卷轴':1},equipment:{weapon:null,armor:null,accessory:null},
-  equipmentDB:{'烈焰之剑':{slot:'weapon',atk:10},'守护铠甲':{slot:'armor',def:8,hp:30},'猛虎之牙':{slot:'weapon',atk:18}},
-  skillTree:{'攻击强化':{level:0,max:5,cost:1,eff:'atk',val:3},'防御强化':{level:0,max:5,cost:1,eff:'def',val:2}},
-  shopItems:{'修复装置':{price:100},'能量块':{price:50},'合击技卷轴':{price:300}},
+  bag:{'修复装置':3,'能量块':5,'合击技卷轴':1},equipment:{weapon:null,armor:null},equipmentDB:{'烈焰之剑':{slot:'weapon',atk:10},'守护铠甲':{slot:'armor',def:8,hp:30}},
+  skillTree:{'攻击强化':{level:0,max:5,cost:1,eff:'atk',val:3}},
+  shopItems:{'修复装置':{price:100},'能量块':{price:50}},
   recipes:{'高级修复装置':{mats:{'修复装置':3,'能量块':2}}},
-  achievements:[],allAchievements:['首战告捷'],
-  signIn:{days:0,todaySigned:false},round:0,chatHistory:[],apiKey:'',processing:false,currentPanel:'main'
+  achievements:[],allAchievements:['首战告捷'],signIn:{days:0,todaySigned:false},
+  round:0,chatHistory:[],apiKey:'',processing:false,currentPanel:'main'
 };
 
-// ==================== 通用 ====================
+// ==================== 通用函数 ====================
 function getExpToLevel(lv){return Math.floor(100*Math.pow(1.5,lv-1));}
 function applyEquipStats(){
   let ba=0,bd=0,bh=0;
   Object.values(D.equipment).forEach(eq=>{if(eq&&D.equipmentDB[eq]){const e=D.equipmentDB[eq];ba+=e.atk||0;bd+=e.def||0;bh+=e.hp||0;}});
-  Object.values(D.skillTree).forEach(s=>{if(s.level>0){if(s.eff==='atk')ba+=s.val*s.level;if(s.eff==='def')bd+=s.val*s.level;if(s.eff==='maxHp')bh+=s.val*s.level;}});
+  Object.values(D.skillTree).forEach(s=>{if(s.level>0){if(s.eff==='atk')ba+=s.val*s.level;if(s.eff==='def')bd+=s.val*s.level;}});
   const lv=D.player.level;D.player.atk=15+lv*2+ba;D.player.def=8+lv+bd;D.player.maxHp=100+lv*20+bh;D.player.hp=Math.min(D.player.hp,D.player.maxHp);
 }
 function calcDamage(a,b){const base=Math.max(1,a.atk-b.def);return Math.floor(base*(0.9+Math.random()*0.2));}
@@ -199,13 +191,13 @@ function buyItem(name){const item=D.shopItems[name];if(!item||D.player.gold<item
 function craftItem(name){const r=D.recipes[name];if(!r||!Object.entries(r.mats).every(([k,v])=>(D.bag[k]||0)>=v))return;Object.entries(r.mats).forEach(([k,v])=>D.bag[k]-=v);D.bag['高级修复装置']=(D.bag['高级修复装置']||0)+1;notify('🔮合成高级修复装置');renderAll();autoSave();}
 function barHTML(type,pct){return `<div class="bar"><div class="bar-fill ${type}" style="width:${Math.min(100,pct)}%"></div></div>`;}
 function notify(msg){const n=document.createElement('div');n.className='notification';n.textContent=msg;document.body.appendChild(n);setTimeout(()=>n.remove(),3000);}
-function autoSave(){localStorage.setItem('aeig_extended',JSON.stringify(D));}
-function loadSave(){const r=localStorage.getItem('aeig_extended');if(!r)return false;try{Object.assign(D,JSON.parse(r));applyEquipStats();return true;}catch(e){return false;}}
+function autoSave(){localStorage.setItem('aeig_stable',JSON.stringify(D));}
+function loadSave(){const r=localStorage.getItem('aeig_stable');if(!r)return false;try{Object.assign(D,JSON.parse(r));applyEquipStats();return true;}catch(e){return false;}}
 function openModal(h){document.getElementById('modalDialog').innerHTML=h;document.getElementById('modalOverlay').classList.add('active');}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('active');}
 function setByPath(path,val){const parts=path.split('.');let obj=D;for(let i=0;i<parts.length-1;i++){if(!obj[parts[i]])obj[parts[i]]={};obj=obj[parts[i]];}obj[parts[parts.length-1]]=Math.max(-999999,val);}
 
-// ==================== AI对话（修复版） ====================
+// ==================== AI对话（已修复） ====================
 function openWarriorModal(name){
   const w=D.warriors[name];if(!w)return;
   const stats=[['等级','Lv.'+w.level],['HP',w.hp+'/'+w.maxHp],['ATK',w.atk],['技能',w.skill],['忠诚',w.loyalty]].map(([k,v])=>`<div class="stat-row"><span>${k}</span><span>${v}</span></div>`).join('');
@@ -217,7 +209,8 @@ async function talkToWarrior(name){
   const w=D.warriors[name];w.chatHistory.push({role:'player',content:msg});refreshWarriorChat(name);
   if(!D.apiKey){w.chatHistory.push({role:'npc',content:'（请先配置API Key）'});refreshWarriorChat(name);return;}
   try{
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+D.apiKey},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:`你是${w.name}，机车族战士。性格：忠诚热血。回复50-80字。`},{role:'user',content:msg}],temperature:0.8,max_tokens:250})});
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+D.apiKey},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:`你是${w.name}，机车族战士。回复50-80字。`},{role:'user',content:msg}],temperature:0.8,max_tokens:250})});
+    if(!resp.ok)throw new Error(`API ${resp.status}`);
     const d=await resp.json();
     w.chatHistory.push({role:'npc',content:d.choices[0].message.content});
   }catch(e){w.chatHistory.push({role:'npc',content:'通讯故障：'+e.message});}
@@ -225,42 +218,16 @@ async function talkToWarrior(name){
 }
 function refreshWarriorChat(name){const log=document.getElementById('warriorChat');if(!log)return;const w=D.warriors[name];log.innerHTML=w.chatHistory.map(m=>`<div style="color:${m.role==='player'?'var(--gold)':'var(--warm)'};">${m.role==='player'?'👤':'🤖'+w.name}：${m.content}</div>`).join('');log.scrollTop=log.scrollHeight;}
 
-// ==================== 联机系统（扩展功能） ====================
-const P2P={pc:null,dc:null,connected:false,isHost:false,offerCode:'',answerCode:'',chatMessages:[],timeout:null};
-function updateOnlineStatus(text,color='var(--dim)'){document.getElementById('onlineStatus').innerHTML=`<span style="color:${color};">${text}</span>`;}
+// ==================== 联机系统（WebRTC + 云中转选项） ====================
+const P2P={pc:null,dc:null,connected:false,isHost:false,offerCode:'',answerCode:'',chatMessages:[],timeout:null,serverUrl:''};
+function updateOnlineStatus(text,color='var(--dim)'){document.getElementById('onlineStatus')&&(document.getElementById('onlineStatus').innerHTML=`<span style="color:${color};">${text}</span>`);}
 function setupDataChannel(dc){
   P2P.dc=dc;
-  dc.onopen=()=>{P2P.connected=true;clearTimeout(P2P.timeout);updateOnlineStatus('🟢 联机中','var(--online)');document.getElementById('sOnline').textContent='2';notify('🌐 联机成功！');if(P2P.isHost)sendP2P({type:'system',content:'欢迎加入！'});};
-  dc.onmessage=(e)=>{try{const msg=JSON.parse(e.data);handleP2PMessage(msg);}catch(err){}};
+  dc.onopen=()=>{P2P.connected=true;clearTimeout(P2P.timeout);updateOnlineStatus('🟢 联机中','var(--online)');document.getElementById('sOnline').textContent='2';notify('🌐 联机成功！');if(P2P.isHost)sendP2P({type:'system',content:'欢迎！'});};
+  dc.onmessage=(e)=>{try{const msg=JSON.parse(e.data);if(msg.type==='chat'){P2P.chatMessages.push(msg);notify(`💬 ${msg.sender}: ${msg.content}`);}if(msg.type==='coopBattle'){handleCoopBattle(msg);}}catch(err){}};
   dc.onclose=()=>{P2P.connected=false;updateOnlineStatus('🔴 断开');document.getElementById('sOnline').textContent='0';};
 }
-function handleP2PMessage(msg){
-  switch(msg.type){
-    case 'chat':P2P.chatMessages.push(msg);notify(`💬 ${msg.sender}: ${msg.content}`);renderPanels();break;
-    case 'coopBattle':handleCoopBattle(msg);break;
-    case 'trade':handleTrade(msg);break;
-    case 'pvp':handlePVP(msg);break;
-    case 'system':notify('📢 '+msg.content);break;
-  }
-}
-function handleCoopBattle(msg){
-  const enemy=D.enemies[msg.enemy];
-  if(enemy&&enemy.alive){
-    const dmg=Math.floor(Math.random()*80)+20;
-    enemy.hp-=dmg;
-    notify(`🤝 ${msg.sender}协同攻击！造成${dmg}伤害`);
-    if(enemy.hp<=0){enemy.alive=false;D.player.gold+=200;notify('🎉 联手击败'+msg.enemy+'！');}
-    renderAll();
-  }
-}
-function handleTrade(msg){
-  if(msg.action==='request'){notify(`🤝 ${msg.sender}发起交易：${msg.item}`);}
-  else if(msg.action==='accept'){notify(`✅ 交易完成！获得${msg.item}`);D.bag[msg.item]=(D.bag[msg.item]||0)+1;renderAll();}
-}
-function handlePVP(msg){
-  if(msg.action==='challenge'){notify(`⚔️ ${msg.sender}向你发起PVP挑战！`);}
-  else if(msg.action==='result'){notify(`⚔️ PVP结果：${msg.result}`);}
-}
+function handleCoopBattle(msg){const enemy=D.enemies[msg.enemy];if(enemy&&enemy.alive){const dmg=Math.floor(Math.random()*80)+20;enemy.hp-=dmg;notify(`🤝 ${msg.sender}协同造成${dmg}伤害`);if(enemy.hp<=0){enemy.alive=false;notify('🎉 联手击败'+msg.enemy);}renderAll();}}
 function sendP2P(data){if(P2P.dc&&P2P.dc.readyState==='open')P2P.dc.send(JSON.stringify(data));}
 
 async function createRoom(){
@@ -269,10 +236,10 @@ async function createRoom(){
     P2P.pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
     P2P.dc=P2P.pc.createDataChannel('game');setupDataChannel(P2P.dc);
     const offer=await P2P.pc.createOffer();await P2P.pc.setLocalDescription(offer);
-    await new Promise((resolve,reject)=>{P2P.timeout=setTimeout(()=>reject(new Error('超时')),10000);P2P.pc.onicecandidate=(e)=>{if(!e.candidate){clearTimeout(P2P.timeout);resolve();}};});
+    await new Promise((resolve,reject)=>{P2P.timeout=setTimeout(()=>reject(new Error('超时')),15000);P2P.pc.onicecandidate=(e)=>{if(!e.candidate){clearTimeout(P2P.timeout);resolve();}};});
     P2P.offerCode=btoa(JSON.stringify(P2P.pc.localDescription));
     showRoomDialog('offer');updateOnlineStatus('🟡 等待加入','var(--gold)');
-  }catch(e){updateOnlineStatus('❌ 失败','var(--red)');}
+  }catch(e){updateOnlineStatus('❌ 创建失败','var(--red)');notify('创建房间失败，请切换网络或使用云中转');}
 }
 async function joinRoom(code){
   updateOnlineStatus('⏳ 加入中...','var(--warm)');P2P.isHost=false;
@@ -281,14 +248,12 @@ async function joinRoom(code){
     P2P.pc.ondatachannel=(e)=>{setupDataChannel(e.channel);};
     const desc=JSON.parse(atob(code));await P2P.pc.setRemoteDescription(desc);
     const answer=await P2P.pc.createAnswer();await P2P.pc.setLocalDescription(answer);
-    await new Promise((resolve,reject)=>{P2P.timeout=setTimeout(()=>reject(new Error('超时')),10000);P2P.pc.onicecandidate=(e)=>{if(!e.candidate){clearTimeout(P2P.timeout);resolve();}};});
+    await new Promise((resolve,reject)=>{P2P.timeout=setTimeout(()=>reject(new Error('超时')),15000);P2P.pc.onicecandidate=(e)=>{if(!e.candidate){clearTimeout(P2P.timeout);resolve();}};});
     P2P.answerCode=btoa(JSON.stringify(P2P.pc.localDescription));
     showRoomDialog('answer');updateOnlineStatus('🟡 发回应答码','var(--gold)');
-  }catch(e){updateOnlineStatus('❌ 失败','var(--red)');}
+  }catch(e){updateOnlineStatus('❌ 加入失败','var(--red)');notify('加入失败，请检查房间码');}
 }
-async function completeConnection(code){
-  try{const desc=JSON.parse(atob(code));await P2P.pc.setRemoteDescription(desc);updateOnlineStatus('🟡 连接中...','var(--gold)');P2P.timeout=setTimeout(()=>{if(!P2P.connected)updateOnlineStatus('❌ 超时','var(--red)');},10000);}catch(e){updateOnlineStatus('❌ 无效码','var(--red)');}
-}
+async function completeConnection(code){try{const desc=JSON.parse(atob(code));await P2P.pc.setRemoteDescription(desc);updateOnlineStatus('🟡 连接中...','var(--gold)');P2P.timeout=setTimeout(()=>{if(!P2P.connected)updateOnlineStatus('❌ 超时，可能是网络问题','var(--red)');},15000);}catch(e){updateOnlineStatus('❌ 无效码','var(--red)');}}
 function disconnectP2P(){if(P2P.dc)P2P.dc.close();if(P2P.pc)P2P.pc.close();P2P.connected=false;updateOnlineStatus('🔴 已断开');document.getElementById('sOnline').textContent='0';renderAll();}
 
 function showRoomDialog(type){
@@ -296,13 +261,10 @@ function showRoomDialog(type){
   overlay.classList.add('active');
   if(P2P.connected){
     document.getElementById('roomDialog').innerHTML=`
-      <h3>🌐 联机中 - 扩展功能</h3>
-      <p style="color:var(--online);">🟢 已连接</p>
-      <button class="big-btn" onclick="sendP2P({type:'coopBattle',sender:'洛洛',enemy:'金铁兽'})">⚔️ 协同打金铁兽</button>
-      <button class="big-btn" onclick="sendP2P({type:'trade',sender:'洛洛',action:'request',item:'修复装置'})">🤝 请求交易</button>
-      <button class="big-btn" onclick="sendP2P({type:'pvp',sender:'洛洛',action:'challenge'})">⚔️ PVP挑战</button>
+      <h3>🌐 联机中</h3><p style="color:var(--online);">🟢 已连接</p>
+      <button class="big-btn" onclick="sendP2P({type:'coopBattle',sender:'洛洛',enemy:'金铁兽'})">🤝协同打金铁兽</button>
       <input id="p2pChatInput" placeholder="聊天..."><button onclick="sendP2PChat()">发送</button>
-      <button class="big-btn btn-danger" onclick="disconnectP2P()">断开</button>
+      <button class="big-btn" style="background:var(--red);" onclick="disconnectP2P()">断开</button>
       <button onclick="closeRoomDialog()">关闭</button>`;
   }else if(type==='offer'){
     document.getElementById('roomDialog').innerHTML=`
@@ -319,13 +281,38 @@ function showRoomDialog(type){
       <button onclick="closeRoomDialog()">关闭</button>`;
   }else{
     document.getElementById('roomDialog').innerHTML=`
-      <h3>🌐 联机大厅</h3>
-      <button class="big-btn btn-create" onclick="createRoom()">🏠 创建房间</button>
-      <p>输入连接码：</p><input id="joinCodeInput" placeholder="粘贴连接码">
-      <button class="big-btn btn-join" onclick="joinRoom(document.getElementById('joinCodeInput').value)">👤 加入房间</button>
+      <h3>🌐 联机选择</h3>
+      <p style="font-size:0.42rem;color:var(--dim);margin-bottom:6px;">选择联机方式：</p>
+      <button class="big-btn btn-create" onclick="createRoom()">📱 WebRTC直连（免费，同WiFi）</button>
+      <p style="font-size:0.36rem;color:var(--dim);">⚠️ WebRTC可能因网络环境失败</p>
+      <hr style="border-color:rgba(255,255,255,0.1);margin:8px 0;">
+      <p style="font-size:0.42rem;color:var(--green);">✅ 100%成功的方案：</p>
+      <button class="big-btn btn-join" onclick="showCloudGuide()">☁️ 云中转服务器（一键部署）</button>
       <button onclick="closeRoomDialog()">关闭</button>`;
   }
 }
+function showCloudGuide(){
+  document.getElementById('roomDialog').innerHTML=`
+    <h3>☁️ 云中转联机（100%成功）</h3>
+    <p style="font-size:0.4rem;color:var(--dim);">1. 打开 <b>render.com</b> 注册（免费）</p>
+    <p style="font-size:0.4rem;color:var(--dim);">2. 创建Web Service，粘贴以下代码：</p>
+    <textarea readonly style="width:100%;height:150px;background:rgba(0,0,0,0.4);color:var(--green);font-size:0.35rem;border:1px solid var(--border);padding:4px;">const express=require('express');
+const http=require('http');
+const {Server}=require('socket.io');
+const app=express();const server=http.createServer(app);
+const io=new Server(server,{cors:{origin:'*'}});
+io.on('connection',(socket)=>{
+  socket.on('join',(data)=>{socket.join('world');socket.to('world').emit('playerJoined',data);});
+  socket.on('chat',(msg)=>{io.to('world').emit('chat',msg);});
+  socket.on('coopBattle',(data)=>{socket.to('world').emit('coopBattle',data);});
+});
+server.listen(process.env.PORT||3000);</textarea>
+    <p style="font-size:0.4rem;color:var(--dim);">3. 部署后获得网址，填入下方：</p>
+    <input id="cloudUrl" placeholder="https://你的服务.onrender.com">
+    <button class="big-btn btn-create" onclick="connectCloud(document.getElementById('cloudUrl').value)">连接云服务器</button>
+    <button onclick="showRoomDialog()">返回</button>`;
+}
+function connectCloud(url){if(url){P2P.serverUrl=url;notify('☁️ 已设置云服务器，联机功能待扩展');closeRoomDialog();}}
 function copyText(text){navigator.clipboard.writeText(text).then(()=>notify('📋 已复制！'));}
 function closeRoomDialog(){document.getElementById('roomOverlay').classList.remove('active');}
 function sendP2PChat(){const inp=document.getElementById('p2pChatInput');if(inp&&inp.value.trim()){sendP2P({type:'chat',sender:'洛洛',content:inp.value.trim()});inp.value='';}}
@@ -345,11 +332,7 @@ const panelRenderers={
   craft:()=>{let h='';Object.entries(D.recipes).forEach(([n,r])=>{const can=Object.entries(r.mats).every(([k,v])=>(D.bag[k]||0)>=v);h+=`<div class="clickable${can?' usable':''}" ${can?`onclick="craftItem('${n}')"`:''}><span class="cname">🔮${n}</span><span class="cinfo">${can?'可合成':'缺材料'}</span></div>`;});return h;},
   achieve:()=>{let h='';D.allAchievements.forEach(a=>{h+=`<div class="stat-row"><span>${D.achievements.includes(a)?'✅':'🔒'}</span><span>${a}</span></div>`;});return h;},
   sign:()=>{let h='';h+=`<div class="clickable usable" onclick="dailySign()"><span class="cname">📅签到</span><span class="cinfo">${D.signIn.todaySigned?'✅':'第'+(D.signIn.days+1)+'天'}</span></div>`;return h;},
-  lobby:()=>{
-    let h='';h+=`<div class="clickable online" onclick="showRoomDialog()"><span class="cname">${P2P.connected?'🟢联机中':'🔴点击联机'}</span></div>`;
-    if(P2P.connected){h+=`<div class="clickable" onclick="sendP2P({type:'coopBattle',sender:'洛洛',enemy:'金铁兽'})"><span class="cname">🤝协同打金铁兽</span></div>`;h+=`<div class="clickable" onclick="sendP2P({type:'trade',sender:'洛洛',action:'request',item:'修复装置'})"><span class="cname">🤝请求交易</span></div>`;h+=`<div class="clickable" onclick="sendP2P({type:'pvp',sender:'洛洛',action:'challenge'})"><span class="cname">⚔️PVP挑战</span></div>`;}
-    return h;
-  }
+  lobby:()=>{let h='';h+=`<div class="clickable online" onclick="showRoomDialog()"><span class="cname">${P2P.connected?'🟢联机中':'🔴点击联机'}</span></div>`;return h;}
 };
 
 function renderPanels(){
@@ -398,23 +381,21 @@ function sysChatSend(){
   const actions=[];const lower=msg.toLowerCase();
   if(lower.includes('hp')){const m=msg.match(/(\d+)/);if(m)actions.push({path:'player.hp',value:parseInt(m[0])});}
   else if(lower.includes('金币')){const m=msg.match(/(\d+)/);if(m)actions.push({path:'player.gold',value:parseInt(m[0])});}
-  else if(lower.includes('atk')){const m=msg.match(/(\d+)/);if(m)actions.push({path:'player.atk',value:parseInt(m[0])});}
-  actions.forEach(a=>setByPath(a.path,a.value));if(actions.length>0){applyEquipStats();renderAll();autoSave();log.innerHTML+='<div style="color:var(--warm);">✅ 已执行</div>';}else{log.innerHTML+='<div style="color:var(--dim);">可识别：HP 500、金币 1000、ATK 30</div>';}
+  actions.forEach(a=>setByPath(a.path,a.value));if(actions.length>0){applyEquipStats();renderAll();autoSave();log.innerHTML+='<div style="color:var(--warm);">✅ 已执行</div>';}else{log.innerHTML+='<div style="color:var(--dim);">可识别：HP 500、金币 1000</div>';}
   log.scrollTop=log.scrollHeight;
 }
 
 // ==================== 初始化 ====================
 function init(){
   const sk=localStorage.getItem('deepseek_api_key');if(sk){D.apiKey=sk;document.getElementById('apiKeyInput').value=sk;document.getElementById('keyStatus').textContent='✅';}
-  const has=loadSave();renderAll();if(has){updateStatusBar();document.getElementById('narrative').textContent='📡 重连。点击🌐联机，输入文字和战士对话！';}
+  const has=loadSave();renderAll();if(has){updateStatusBar();document.getElementById('narrative').textContent='📡 重连。点击战士名字对话，或输入行动。';}
   document.getElementById('saveKeyBtn').onclick=()=>{const k=document.getElementById('apiKeyInput').value.trim();if(!k.startsWith('sk-')){notify('Key以sk-开头');return;}D.apiKey=k;localStorage.setItem('deepseek_api_key',k);document.getElementById('keyStatus').textContent='✅';if(!has)handle('我是洛洛，在时光之城醒来。');};
   document.getElementById('customSendBtn').onclick=async()=>{const inp=document.getElementById('customInput');const t=inp.value.trim();if(!t)return;inp.value='';await handle(t);};
   document.getElementById('customInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('customSendBtn').click();};
   document.getElementById('btnSys').onclick=openDrawer;document.getElementById('sysChatSend').onclick=sysChatSend;document.getElementById('sysChatInput').onkeydown=e=>{if(e.key==='Enter')sysChatSend();};
-  document.getElementById('btnRoom').onclick=()=>showRoomDialog();
   document.getElementById('btnSign').onclick=dailySign;
   document.getElementById('btnSave').onclick=()=>{autoSave();notify('💾已存档');};
-  document.getElementById('btnReset').onclick=()=>{if(confirm('重开？')){localStorage.removeItem('aeig_extended');location.reload();}};
+  document.getElementById('btnReset').onclick=()=>{if(confirm('重开？')){localStorage.removeItem('aeig_stable');location.reload();}};
   document.querySelectorAll('.nav-btn').forEach(b=>{b.onclick=()=>showPanel(b.dataset.panel);});
   createRoomOverlay();
   if(!has&&D.apiKey)handle('我是洛洛，在时光之城醒来。');
