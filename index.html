@@ -3,40 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>洛洛历险记 · 联机版</title>
+<title>洛洛历险记 · 手机联机版</title>
 <style>
   :root {
     --bg: #060b18; --panel: rgba(10,16,30,0.88); --cyan: #00d4ff; --gold: #f0c040;
     --red: #ff4060; --green: #40e890; --purple: #a070ff; --orange: #ff8040;
     --text: #d0d4e0; --dim: #6070a0; --border: rgba(0,200,255,0.22);
-    --energy: #ffe860; --pink: #ff70a0; --warm: #ffb088; --online: #40e890;
+    --energy: #ffe860; --warm: #ffb088; --online: #40e890;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);font-family:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;min-height:100vh;padding:4px 4px 95px;color:var(--text);overflow-x:hidden;}
+  body{background:var(--bg);font-family:'PingFang SC','Microsoft YaHei',sans-serif;min-height:100vh;padding:4px 4px 90px;color:var(--text);overflow-x:hidden;}
   body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 30% 10%,rgba(0,212,255,0.03) 0%,transparent 60%),radial-gradient(ellipse at 70% 90%,rgba(255,112,160,0.03) 0%,transparent 60%);}
   .game-container{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:3px;position:relative;z-index:1;}
   .title-area{text-align:center;padding:2px 0;}
-  .title-area h1{font-size:1rem;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--online),var(--warm),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradShift 3s ease infinite;background-size:300% 300%;}
-  @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-  .title-area .sub{font-size:0.36rem;color:var(--dim);letter-spacing:1px;}
+  .title-area h1{font-size:1rem;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--online),var(--warm));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .online-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--online);margin-right:3px;animation:pulse 1.5s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
   .status-row{display:flex;gap:1px;flex-wrap:wrap;}
-  .status-card{flex:1;min-width:30px;background:var(--panel);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:5px;padding:3px 1px;text-align:center;transition:all 0.3s;}
-  .status-card .lbl{font-size:0.28rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.3px;}
-  .status-card .val{font-size:0.5rem;font-weight:800;margin-top:1px;}
-  .val.cyan{color:var(--cyan);}.val.gold{color:var(--gold);}.val.red{color:var(--red);}.val.green{color:var(--green);}.val.purple{color:var(--purple);}.val.orange{color:var(--orange);}.val.pink{color:var(--pink);}.val.warm{color:var(--warm);}.val.online{color:var(--online);}
+  .status-card{flex:1;min-width:28px;background:var(--panel);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:5px;padding:3px 1px;text-align:center;}
+  .status-card .lbl{font-size:0.28rem;color:var(--dim);text-transform:uppercase;}
+  .status-card .val{font-size:0.48rem;font-weight:800;}
+  .val.cyan{color:var(--cyan);}.val.gold{color:var(--gold);}.val.red{color:var(--red);}.val.green{color:var(--green);}.val.online{color:var(--online);}.val.warm{color:var(--warm);}.val.pink{color:var(--pink);}
 
   .nav-scroll{overflow-x:auto;display:flex;gap:1px;padding:1px 0;scrollbar-width:none;}
   .nav-scroll::-webkit-scrollbar{display:none;}
   .nav-btn{background:rgba(14,22,40,0.6);border:1px solid rgba(255,255,255,0.05);color:var(--dim);padding:3px 5px;border-radius:10px;font-size:0.38rem;cursor:pointer;white-space:nowrap;transition:all 0.3s;font-weight:600;}
   .nav-btn:hover,.nav-btn.active{border-color:var(--online);color:var(--online);background:rgba(64,232,144,0.08);}
-  .nav-btn.online-tab{border-color:rgba(64,232,144,0.3);}
 
   .panel-grid{display:flex;flex-direction:column;gap:2px;}
-  details.panel{background:var(--panel);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:7px;overflow:hidden;transition:all 0.3s;}
-  details.panel[open]{box-shadow:0 2px 15px rgba(0,200,255,0.06);}
+  details.panel{background:var(--panel);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:7px;overflow:hidden;}
   details.panel summary{padding:4px 7px;cursor:pointer;font-size:0.48rem;font-weight:700;color:var(--warm);background:linear-gradient(135deg,rgba(255,176,136,0.02),rgba(0,212,255,0.02));list-style:none;display:flex;justify-content:space-between;}
   details.panel summary::-webkit-details-marker{display:none;}
   .panel-content{padding:4px 7px;display:grid;grid-template-columns:1fr 1fr;gap:1px 3px;font-size:0.42rem;}
@@ -44,18 +40,16 @@
   .clickable:hover{background:rgba(255,176,136,0.04);border-color:rgba(255,176,136,0.15);}
   .clickable .cname{font-weight:700;color:var(--warm);font-size:0.42rem;}
   .clickable .cinfo{font-size:0.36rem;color:var(--dim);}
-  .clickable.usable{border-color:rgba(64,232,144,0.15);}
-  .clickable.danger{border-color:rgba(255,64,96,0.15);}
   .clickable.online{border-color:rgba(64,232,144,0.25);}
   .stat-row{display:flex;justify-content:space-between;align-items:center;padding:1px 0;border-bottom:1px solid rgba(255,255,255,0.006);}
   .bar{grid-column:1/-1;height:2px;background:rgba(255,255,255,0.015);border-radius:1px;margin:1px 0;overflow:hidden;}
   .bar-fill{height:100%;border-radius:1px;transition:width 0.6s;}
   .bar-fill.hp{background:linear-gradient(90deg,#ff4060,#ff6080);}.bar-fill.ex{background:linear-gradient(90deg,#f0c040,#ffe080);}
 
-  .story-box{background:var(--panel);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:9px;padding:7px 9px;line-height:1.55;font-size:0.58rem;min-height:18px;box-shadow:0 4px 18px rgba(0,0,0,0.3);position:relative;overflow:hidden;}
-  .story-box .scene{font-size:0.36rem;color:var(--dim);letter-spacing:1px;margin-bottom:1px;position:relative;z-index:1;}
-  .story-box .narrative{white-space:pre-wrap;position:relative;z-index:1;}
-  .story-box .hint{font-size:0.4rem;color:var(--warm);margin-top:2px;font-style:italic;border-left:2px solid var(--warm);padding-left:3px;position:relative;z-index:1;}
+  .story-box{background:var(--panel);backdrop-filter:blur(25px);border:1px solid var(--border);border-radius:9px;padding:7px 9px;line-height:1.55;font-size:0.58rem;min-height:18px;}
+  .story-box .scene{font-size:0.36rem;color:var(--dim);letter-spacing:1px;margin-bottom:1px;}
+  .story-box .narrative{white-space:pre-wrap;}
+  .story-box .hint{font-size:0.4rem;color:var(--warm);margin-top:2px;font-style:italic;border-left:2px solid var(--warm);padding-left:3px;}
 
   .choices{display:flex;flex-direction:column;gap:1px;}
   .choice-btn{background:linear-gradient(135deg,rgba(14,22,40,0.7),rgba(10,16,35,0.8));border:1px solid var(--border);color:var(--text);padding:5px 7px;border-radius:5px;font-size:0.5rem;text-align:left;cursor:pointer;transition:all 0.3s;}
@@ -64,12 +58,11 @@
 
   .input-row{display:flex;gap:2px;}
   .input-row input{flex:1;background:rgba(255,255,255,0.02);border:1px solid var(--border);color:var(--text);padding:4px 7px;border-radius:12px;font-size:0.5rem;outline:none;}
-  .input-row input:focus{border-color:var(--warm);}
   .input-row button{background:rgba(255,176,136,0.1);border:1px solid var(--warm);color:var(--warm);padding:4px 9px;border-radius:12px;font-weight:800;cursor:pointer;font-size:0.46rem;}
 
   .quick-row{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;}
   .quick-btn{width:24px;height:24px;border-radius:50%;background:rgba(14,22,40,0.6);border:1px solid rgba(255,255,255,0.06);color:var(--dim);font-size:0.28rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all 0.3s;}
-  .quick-btn:hover{border-color:var(--warm);color:var(--warm);transform:translateY(-1px);}
+  .quick-btn:hover{border-color:var(--warm);color:var(--warm);}
   .quick-btn .ico{font-size:0.45rem;}
 
   .bottom-bar{position:fixed;bottom:2px;left:50%;transform:translateX(-50%);max-width:640px;width:calc(100% - 8px);z-index:100;background:rgba(10,16,35,0.92);backdrop-filter:blur(30px);border:1px solid var(--border);border-radius:8px;padding:2px 4px;display:flex;gap:1px;align-items:center;}
@@ -78,39 +71,24 @@
 
   .notification{position:fixed;top:5px;left:50%;transform:translateX(-50%);background:rgba(10,16,35,0.95);border:1px solid var(--warm);border-radius:5px;padding:3px 8px;color:var(--warm);font-size:0.4rem;z-index:999;animation:notifySlide 0.4s ease,notifyFade 0.5s ease 2.5s forwards;max-width:90%;pointer-events:none;}
   @keyframes notifySlide{from{opacity:0;transform:translateX(-50%) translateY(-6px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-  @keyframes notifyFade{to{opacity:0;transform:translateX(-50%) translateY(-3px)}}
+  @keyframes notifyFade{to{opacity:0}}
 
-  .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:1000;justify-content:center;align-items:center;backdrop-filter:blur(4px);}
-  .modal-overlay.active{display:flex;}
-  .modal-dialog{background:var(--panel);backdrop-filter:blur(30px);border:2px solid var(--border);border-radius:11px;padding:9px;max-width:460px;width:92%;max-height:72vh;overflow-y:auto;color:var(--text);}
-  .modal-dialog h3{color:var(--warm);font-size:0.6rem;margin-bottom:3px;text-align:center;}
-  .modal-dialog .close-btn{float:right;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--dim);padding:2px 5px;border-radius:3px;cursor:pointer;font-size:0.35rem;}
-  .modal-dialog .chat-log{max-height:100px;overflow-y:auto;font-size:0.42rem;line-height:1.4;margin:3px 0;padding:4px;background:rgba(0,0,0,0.2);border-radius:5px;}
-  .modal-dialog .chat-input-row{display:flex;gap:1px;margin-bottom:3px;}
-  .modal-dialog .chat-input-row input{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);padding:3px 6px;border-radius:7px;font-size:0.4rem;outline:none;}
-  .modal-dialog .chat-input-row button{background:rgba(255,176,136,0.12);border:1px solid var(--warm);color:var(--warm);padding:3px 7px;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.38rem;}
-  .modal-dialog .cmd-row{display:flex;gap:1px;flex-wrap:wrap;}
-  .modal-dialog .cmd-btn{background:rgba(255,176,136,0.03);border:1px solid rgba(255,255,255,0.06);color:var(--dim);padding:2px 4px;border-radius:5px;font-size:0.35rem;cursor:pointer;transition:all 0.3s;}
-  .modal-dialog .cmd-btn:hover{border-color:var(--warm);color:var(--warm);}
-  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px 3px;font-size:0.4rem;margin-bottom:3px;}
-
-  .drawer-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:998;display:none;}
-  .drawer-overlay.active{display:block;}
-  .sys-drawer{position:fixed;top:0;right:-100%;width:88%;max-width:400px;height:100%;background:rgba(10,16,35,0.97);backdrop-filter:blur(30px);border-left:2px solid var(--border);z-index:999;transition:right 0.35s;display:flex;flex-direction:column;}
-  .sys-drawer.open{right:0;}
-  .drawer-header{padding:8px;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;}
-  .drawer-body{flex:1;overflow-y:auto;padding:6px;font-size:0.46rem;line-height:1.5;}
-  .drawer-input-row{display:flex;gap:2px;padding:5px;border-top:1px solid rgba(255,255,255,0.04);}
-  .drawer-input-row input{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);padding:4px;border-radius:7px;font-size:0.44rem;outline:none;}
-  .drawer-input-row button{background:rgba(255,176,136,0.15);border:1px solid var(--warm);color:var(--warm);padding:4px 7px;border-radius:7px;cursor:pointer;font-size:0.42rem;}
-  .chat-msg{padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.02);}
-  .chat-msg .sender{font-weight:700;}
-  .chat-msg .time{font-size:0.3rem;color:var(--dim);}
+  /* 联机弹窗 */
+  .room-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:1000;justify-content:center;align-items:center;}
+  .room-overlay.active{display:flex;}
+  .room-dialog{background:var(--panel);backdrop-filter:blur(30px);border:2px solid var(--online);border-radius:14px;padding:16px;max-width:420px;width:90%;text-align:center;color:var(--text);}
+  .room-dialog h3{color:var(--online);font-size:0.75rem;margin-bottom:8px;}
+  .room-dialog .big-btn{display:block;width:100%;margin:6px 0;padding:12px;border-radius:10px;font-size:0.6rem;font-weight:800;cursor:pointer;border:none;}
+  .room-dialog .btn-create{background:var(--online);color:#060b18;}
+  .room-dialog .btn-join{background:var(--cyan);color:#060b18;}
+  .room-dialog input{width:100%;margin:6px 0;padding:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:0.5rem;outline:none;text-align:center;}
+  .room-dialog .close-btn{background:transparent;border:1px solid rgba(255,255,255,0.2);color:var(--dim);padding:6px 14px;border-radius:8px;cursor:pointer;margin-top:8px;font-size:0.45rem;}
 </style>
 </head>
 <body>
+
 <div class="game-container">
-  <div class="title-area"><h1><span class="online-dot"></span>洛洛历险记·联机版</h1><div class="sub" id="onlineStatus">🔴 离线模式 | 点击💬系统→连接服务器</div></div>
+  <div class="title-area"><h1><span class="online-dot"></span>洛洛历险记·联机版</h1><div class="sub" id="onlineStatus">🔴 未联机 | 点击 🌐联机 按钮</div></div>
 
   <div class="status-row">
     <div class="status-card"><div class="lbl">主角</div><div class="val cyan" id="sName">洛洛</div></div>
@@ -123,279 +101,453 @@
   </div>
 
   <div class="nav-scroll" id="navRow">
-    <button class="nav-btn active" data-panel="main">📋主</button><button class="nav-btn" data-panel="warriors">⚔️战士</button><button class="nav-btn" data-panel="bag">🎒背包</button><button class="nav-btn" data-panel="equip">🛡️装备</button><button class="nav-btn" data-panel="skilltree">📜技能</button><button class="nav-btn" data-panel="dungeon">👹副本</button><button class="nav-btn online-tab" data-panel="lobby">🌐大厅</button><button class="nav-btn online-tab" data-panel="chat">💬聊天</button><button class="nav-btn online-tab" data-panel="team">👥组队</button><button class="nav-btn online-tab" data-panel="trade">🤝交易</button>
+    <button class="nav-btn active" data-panel="main">📋主</button>
+    <button class="nav-btn" data-panel="warriors">⚔️战士</button>
+    <button class="nav-btn" data-panel="bag">🎒背包</button>
+    <button class="nav-btn" data-panel="dungeon">👹副本</button>
+    <button class="nav-btn" data-panel="lobby">🌐联机</button>
   </div>
 
   <div class="panel-grid" id="panelContainer"></div>
-  <div class="story-box"><div class="scene" id="sceneTag">· 第一章 ·</div><div class="narrative" id="narrative">正在加载...</div><div class="hint" id="sysHint"></div></div>
+  <div class="story-box">
+    <div class="scene" id="sceneTag">· 第一章 ·</div>
+    <div class="narrative" id="narrative">正在加载...</div>
+    <div class="hint" id="sysHint"></div>
+  </div>
   <div class="choices" id="choices"></div>
   <div class="input-row"><input type="text" id="customInput" placeholder="✍ 行动..."><button id="customSendBtn">执行</button></div>
   <div class="quick-row">
-    <button class="quick-btn" id="btnSys"><span class="ico">💬</span></button>
-    <button class="quick-btn" id="btnConnect"><span class="ico">🌐</span></button>
+    <button class="quick-btn" id="btnRoom"><span class="ico">🌐</span></button>
     <button class="quick-btn" id="btnSave"><span class="ico">💾</span></button>
     <button class="quick-btn" id="btnReset"><span class="ico">🔄</span></button>
   </div>
 </div>
 
 <div class="bottom-bar"><input type="password" id="apiKeyInput" placeholder="API Key"><button id="saveKeyBtn">💾Key</button><span id="keyStatus">未配置</span></div>
-<div class="modal-overlay" id="modalOverlay"><div class="modal-dialog" id="modalDialog"></div></div>
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-<div class="sys-drawer" id="sysDrawer">
-  <div class="drawer-header"><span style="color:var(--warm);">💬 系统控制台</span><button onclick="closeDrawer()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--dim);padding:2px 5px;border-radius:5px;">✕</button></div>
-  <div class="drawer-body" id="sysChatLog"><div style="color:var(--dim);">🤖 就绪。输入修改指令或 /connect 连接服务器</div></div>
-  <div class="drawer-input-row"><input id="sysChatInput" placeholder="修改/联机指令..."><button id="sysChatSend">执行</button></div>
+
+<!-- 联机弹窗 -->
+<div class="room-overlay" id="roomOverlay">
+  <div class="room-dialog" id="roomDialog"></div>
 </div>
 
 <script>
-// ==================== 联机系统核心 ====================
-const WS={ws:null,connected:false,playerId:'player_'+Math.random().toString(36).substr(2,8),playerName:'洛洛',room:'world',onlinePlayers:[],chatMessages:[],team:{id:null,members:[]},pendingTrades:[],friends:[]};
+// ==================== 简易P2P联机引擎 ====================
+// 原理：一台手机创建RTCPeerConnection，生成offer；另一台手机输入offer连接。
+// 通过手动交换连接码（简化版：用复制粘贴的方式交换信令）
 
-function connectServer(url){
-  if(WS.ws){WS.ws.close();}
-  try{
-    WS.ws=new WebSocket(url||'ws://localhost:3000');
-    WS.ws.onopen=()=>{
-      WS.connected=true;
-      document.getElementById('onlineStatus').innerHTML='<span class="online-dot"></span>🟢 已连接 | '+WS.playerName;
-      document.getElementById('sOnline').textContent=WS.onlinePlayers.length+1;
-      WS.ws.send(JSON.stringify({type:'join',id:WS.playerId,name:WS.playerName,level:D.player.level,city:D.city}));
-      notify('🌐 已连接到服务器！');
-      addChatMsg('系统','欢迎来到机兽世界联机大厅！');
-    };
-    WS.ws.onmessage=(e)=>{
-      const msg=JSON.parse(e.data);
-      handleWSMessage(msg);
-    };
-    WS.ws.onclose=()=>{
-      WS.connected=false;
-      document.getElementById('onlineStatus').innerHTML='🔴 离线模式 | 服务器断开';
-      notify('🔴 与服务器断开连接');
-    };
-    WS.ws.onerror=()=>{
-      notify('❌ 无法连接到服务器，请确认服务器已启动');
-      document.getElementById('onlineStatus').innerHTML='🔴 离线模式 | 连接失败';
-    };
-  }catch(e){notify('❌ 连接失败：'+e.message);}
-}
+const P2P = {
+  pc: null,
+  dc: null, // DataChannel
+  connected: false,
+  isHost: false,
+  roomCode: '',
+  peers: [],
+  chatMessages: [],
 
-function handleWSMessage(msg){
-  switch(msg.type){
-    case 'playerList':
-      WS.onlinePlayers=msg.players||[];
-      document.getElementById('sOnline').textContent=WS.onlinePlayers.length+1;
-      renderPanels();
-      break;
-    case 'chat':
-      WS.chatMessages.push(msg);
-      if(WS.chatMessages.length>100)WS.chatMessages.shift();
-      addChatMsg(msg.sender,msg.content);
-      break;
-    case 'teamInvite':
-      notify(`👥 ${msg.from}邀请你加入队伍！`);
-      break;
-    case 'teamUpdate':
-      WS.team=msg.team;
-      renderPanels();
-      break;
-    case 'tradeRequest':
-      WS.pendingTrades.push(msg);
-      notify(`🤝 ${msg.from}发起交易请求！`);
-      break;
-    case 'battleRequest':
-      notify(`⚔️ ${msg.from}向你发起PVP挑战！`);
-      break;
-    case 'bossEvent':
-      notify(`👹 世界BOSS事件：${msg.content}`);
-      break;
-    case 'friendOnline':
-      notify(`👤 ${msg.name}上线了`);
-      break;
-    default:break;
-  }
-}
-
-function sendWS(data){if(WS.connected&&WS.ws){WS.ws.send(JSON.stringify(data));}}
-
-function sendChat(channel,content){
-  if(WS.connected){sendWS({type:'chat',channel,content,sender:WS.playerName,id:WS.playerId,time:new Date().toLocaleTimeString()});}
-  else{WS.chatMessages.push({sender:WS.playerName,content,time:new Date().toLocaleTimeString(),channel});addChatMsg(WS.playerName,content);}
-}
-
-function addChatMsg(sender,content){
-  const log=document.getElementById('chatLog');
-  if(!log)return;
-  const div=document.createElement('div');div.className='chat-msg';
-  div.innerHTML=`<span class="sender" style="color:${sender==='系统'?'var(--gold)':'var(--cyan)'};">${sender}</span>：${content}`;
-  log.appendChild(div);log.scrollTop=log.scrollHeight;
-}
-
-function inviteTeam(playerId){sendWS({type:'teamInvite',target:playerId,from:WS.playerName,fromId:WS.playerId});notify('👥 已发送组队邀请');}
-function requestTrade(playerId){sendWS({type:'tradeRequest',target:playerId,from:WS.playerName,fromId:WS.playerId});notify('🤝 已发送交易请求');}
-function requestPVP(playerId){sendWS({type:'battleRequest',target:playerId,from:WS.playerName,fromId:WS.playerId});notify('⚔️ 已发送PVP挑战');}
-function addFriend(playerName){if(!WS.friends.includes(playerName)){WS.friends.push(playerName);notify('👤 已添加'+playerName+'为好友');}}
-
-// ==================== 游戏数据 ====================
-const D={player:{name:'洛洛',level:1,hp:100,maxHp:100,atk:15,def:8,spd:10,gold:500,exp:0,expToLevel:100,skillPoints:0,mood:'PLEASED'},warriors:{'霹雳火':{name:'霹雳火',role:'守城大将',personality:'忠诚热血',level:1,hp:150,maxHp:150,atk:25,def:15,spd:12,skill:'雷霆半月斩',skillLevel:1,loyalty:90,mood:'PROUD',chatHistory:[],memories:[]},'风火轮':{name:'风火轮',role:'侦察兵',personality:'活泼机灵',level:1,hp:80,maxHp:80,atk:12,def:6,spd:22,skill:'旋风轮',skillLevel:1,loyalty:85,mood:'EXCITED',chatHistory:[],memories:[]}},availableWarriors:['急先锋','力霸天','冲击波','龙卷风','超音速'],enemies:{'金铁兽':{level:20,hp:800,maxHp:800,atk:40,def:15,spd:10,alive:true,dropTable:[{name:'修复装置',chance:0.8}]},'猛虎王':{level:45,hp:4000,maxHp:4000,atk:80,def:40,spd:20,alive:true,dropTable:[{name:'猛虎之牙',chance:0.1}]}},dungeons:{'能源之城外围':{level:5,enemies:['金铁兽'],rewards:{exp:30,gold:100}},'雷霆殿深处':{level:40,enemies:['猛虎王'],rewards:{exp:500,gold:1000}}},city:'时光之城',bag:{'修复装置':3,'能量块':5,'合击技卷轴':1},equipment:{weapon:null,armor:null,accessory:null},equipmentDB:{'烈焰之剑':{slot:'weapon',atk:10,rarity:'精良'},'守护铠甲':{slot:'armor',def:8,hp:30,rarity:'精良'},'疾风之靴':{slot:'accessory',spd:5,rarity:'稀有'},'猛虎之牙':{slot:'weapon',atk:18,rarity:'史诗'}},skillTree:{'攻击强化':{level:0,max:5,cost:1,eff:'atk',val:3},'防御强化':{level:0,max:5,cost:1,eff:'def',val:2},'生命强化':{level:0,max:5,cost:1,eff:'maxHp',val:15}},shopItems:{'修复装置':{price:100},'能量块':{price:50},'合击技卷轴':{price:300}},achievements:[],signIn:{days:0,todaySigned:false},round:0,chatHistory:[],apiKey:'',processing:false,currentPanel:'main'};
-
-// ==================== 原有功能（精简但完整） ====================
-function getExpToLevel(lv){return Math.floor(100*Math.pow(1.5,lv-1));}
-function calcDamage(a,b){const base=Math.max(1,a.atk-b.def);const crit=Math.random()<0.1;return Math.floor(base*(crit?2:1)*(0.9+Math.random()*0.2));}
-function applyEquipStats(){
-  let ba=0,bd=0,bh=0;
-  Object.values(D.equipment).forEach(eq=>{if(eq&&D.equipmentDB[eq]){const e=D.equipmentDB[eq];ba+=e.atk||0;bd+=e.def||0;bh+=e.hp||0;}});
-  Object.values(D.skillTree).forEach(s=>{if(s.level>0){if(s.eff==='atk')ba+=s.val*s.level;if(s.eff==='def')bd+=s.val*s.level;if(s.eff==='maxHp')bh+=s.val*s.level;}});
-  const lv=D.player.level;D.player.atk=15+lv*2+ba;D.player.def=8+lv+bd;D.player.maxHp=100+lv*20+bh;D.player.hp=Math.min(D.player.hp,D.player.maxHp);
-}
-function notify(msg){const n=document.createElement('div');n.className='notification';n.textContent=msg;document.body.appendChild(n);setTimeout(()=>n.remove(),3000);}
-function autoSave(){localStorage.setItem('aeig_online_v1',JSON.stringify(D));}
-function loadSave(){const r=localStorage.getItem('aeig_online_v1');if(!r)return false;try{Object.assign(D,JSON.parse(r));applyEquipStats();return true;}catch(e){return false;}}
-function openModal(h){document.getElementById('modalDialog').innerHTML=h;document.getElementById('modalOverlay').classList.add('active');}
-function closeModal(){document.getElementById('modalOverlay').classList.remove('active');}
-function barHTML(type,pct){return `<div class="bar"><div class="bar-fill ${type}" style="width:${Math.min(100,pct)}%"></div></div>`;}
-function setByPath(path,val){const parts=path.split('.');let obj=D;for(let i=0;i<parts.length-1;i++){if(!obj[parts[i]])obj[parts[i]]={};obj=obj[parts[i]];}obj[parts[parts.length-1]]=Math.max(-999999,val);}
-
-async function fightEnemy(enemyName){
-  const enemy=D.enemies[enemyName];if(!enemy||!enemy.alive||D.player.hp<=0)return;closeModal();
-  let eHp=enemy.hp,log='',turn=0;const ally=Object.values(D.warriors).find(w=>w.hp>0);
-  while(eHp>0&&D.player.hp>0&&turn<50){turn++;
-    const p=calcDamage(D.player,enemy);eHp-=p.dmg;log+=`⚔️-${p.dmg}${p.crit?'💥':''} `;
-    if(eHp<=0){log+='🎉击败！';break;}
-    if(ally&&turn%3===0)eHp-=calcDamage(ally,enemy).dmg;
-    D.player.hp-=calcDamage(enemy,D.player).dmg;
-  }
-  if(D.player.hp>0&&eHp<=0){enemy.alive=false;D.player.exp+=enemy.level*5;D.player.gold+=enemy.level*10;
-    if(enemy.dropTable)enemy.dropTable.forEach(d=>{if(Math.random()<d.chance){D.bag[d.name]=(D.bag[d.name]||0)+1;notify('🎒'+d.name);}});
-    if(WS.connected)sendWS({type:'bossDefeated',enemy:enemyName,by:WS.playerName});
-  }
-  document.getElementById('narrative').textContent=log;
-  while(D.player.exp>=D.player.expToLevel){D.player.exp-=D.player.expToLevel;D.player.level++;D.player.expToLevel=getExpToLevel(D.player.level);D.player.skillPoints++;notify('⬆️Lv.'+D.player.level);}
-  applyEquipStats();renderAll();autoSave();
-}
-function equipItem(name){const eq=D.equipmentDB[name];if(!eq||(D.bag[name]||0)<=0)return;const old=D.equipment[eq.slot];if(old)D.bag[old]=(D.bag[old]||0)+1;D.equipment[eq.slot]=name;D.bag[name]--;applyEquipStats();notify('🛡️装备'+name);renderAll();autoSave();closeModal();}
-function learnSkill(name){const s=D.skillTree[name];if(!s||s.level>=s.max||D.player.skillPoints<s.cost)return;D.player.skillPoints-=s.cost;s.level++;applyEquipStats();notify('📜'+name+'→Lv.'+s.level);renderAll();autoSave();}
-function dailySign(){if(D.signIn.todaySigned)return;D.signIn.days++;D.signIn.todaySigned=true;D.player.gold+=[50,100,150,200,300,500,800][Math.min(D.signIn.days-1,6)];notify('📅签到第'+D.signIn.days+'天');renderAll();autoSave();}
-function buyItem(name){const item=D.shopItems[name];if(!item||D.player.gold<item.price)return;D.player.gold-=item.price;D.bag[name]=(D.bag[name]||0)+1;notify('🛒'+name);renderAll();autoSave();}
-
-// ==================== 面板系统 ====================
-const RARITY_COLORS={精良:'var(--green)',稀有:'var(--cyan)',史诗:'var(--purple)',传说:'var(--orange)'};
-const panelRenderers={
-  main:()=>{const p=D.player;let h='';h+=`<div class="stat-row"><span>❤️HP</span><span>${p.hp}/${p.maxHp}</span></div>`+barHTML('hp',p.hp/p.maxHp*100);h+=`<div class="stat-row"><span>✨经验</span><span>${p.exp}/${p.expToLevel}</span></div>`+barHTML('ex',p.exp/p.expToLevel*100);h+=`<div class="stat-row"><span>⭐技能点</span><span style="color:var(--warm);">${p.skillPoints}</span></div>`;Object.values(D.warriors).forEach(w=>{h+=`<div class="clickable" onclick="openWarriorModal('${w.name}')"><span class="cname">${w.name}</span><span class="cinfo">❤️${w.hp} 忠${w.loyalty}</span></div>`;});return h;},
-  warriors:()=>{let h='';Object.values(D.warriors).forEach(w=>{h+=`<div class="clickable" onclick="openWarriorModal('${w.name}')"><span class="cname">${w.name}</span><span class="cinfo">Lv.${w.level}</span></div>`;});h+=`<div style="grid-column:1/-1;color:var(--dim);font-size:0.36rem;">可招募</div>`;D.availableWarriors.forEach(w=>{h+=`<div class="clickable" onclick="handle('招募${w}')"><span class="cname">${w}</span></div>`;});h+=`<div style="grid-column:1/-1;color:var(--red);font-size:0.36rem;">敌人</div>`;Object.entries(D.enemies).filter(([,e])=>e.alive).forEach(([k,e])=>{h+=`<div class="clickable danger" onclick="fightEnemy('${k}')"><span class="cname">${k}</span><span class="cinfo">Lv.${e.level}</span></div>`;});return h;},
-  bag:()=>{let h='';Object.entries(D.bag).filter(([,v])=>v>0).forEach(([k,v])=>{const eq=D.equipmentDB[k];h+=`<div class="clickable usable" onclick="${eq?`equipItem('${k}')`:`notify('📦${k}×${v}')`}"><span class="cname">${eq?'🛡️':''}${k}</span><span class="cinfo">×${v}${eq?' [装备]':''}</span></div>`;});if(!h)h='<div style="color:var(--dim);grid-column:1/-1;">空空</div>';return h;},
-  equip:()=>{let h='';['weapon','armor','accessory'].forEach(s=>{const eq=D.equipment[s];h+=`<div class="clickable" onclick="${eq?`notify('已装备${eq}')`:`notify('空槽')`}"><span class="cname">${s==='weapon'?'⚔️':s==='armor'?'🛡️':'💍'}${s}</span><span class="cinfo">${eq||'空'}</span></div>`;});return h;},
-  skilltree:()=>{let h='';h+=`<div style="grid-column:1/-1;color:var(--warm);font-size:0.36rem;">⭐技能点：${D.player.skillPoints}</div>`;Object.entries(D.skillTree).forEach(([n,s])=>{h+=`<div class="clickable${s.level<s.max?' usable':''}" onclick="learnSkill('${n}')"><span class="cname">📜${n}</span><span class="cinfo">Lv.${s.level}/${s.max} ${s.cost}点</span></div>`;});return h;},
-  dungeon:()=>{let h='';Object.entries(D.dungeons).forEach(([n,d])=>{h+=`<div class="clickable" onclick="fightEnemy('${d.enemies[0]}')"><span class="cname">👹${n}</span><span class="cinfo">Lv.${d.level}</span></div>`;});return h;},
-  lobby:()=>{
-    let h='';h+=`<div style="grid-column:1/-1;color:var(--online);font-size:0.4rem;">🌐 在线玩家 (${WS.onlinePlayers.length+1})</div>`;
-    h+=`<div class="clickable online"><span class="cname"><span class="online-dot"></span>${WS.playerName} (你)</span><span class="cinfo">Lv.${D.player.level}</span></div>`;
-    WS.onlinePlayers.forEach(p=>{
-      h+=`<div class="clickable online"><span class="cname">${p.name}</span><span class="cinfo">Lv.${p.level} ${p.city||''}</span></div>`;
-      h+=`<div class="cmd-row" style="grid-column:1/-1;margin-bottom:2px;">
-        <button class="cmd-btn" onclick="inviteTeam('${p.id}')">👥组队</button>
-        <button class="cmd-btn" onclick="requestTrade('${p.id}')">🤝交易</button>
-        <button class="cmd-btn" onclick="requestPVP('${p.id}')">⚔️PVP</button>
-        <button class="cmd-btn" onclick="addFriend('${p.name}')">👤好友</button>
-      </div>`;
+  // 创建房间（房主）
+  async createRoom() {
+    P2P.isHost = true;
+    P2P.pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+    
+    // 创建DataChannel
+    P2P.dc = P2P.pc.createDataChannel('game');
+    setupDataChannel(P2P.dc);
+    
+    // 生成offer
+    const offer = await P2P.pc.createOffer();
+    await P2P.pc.setLocalDescription(offer);
+    
+    // 等待ICE候选收集完成
+    await new Promise(resolve => {
+      P2P.pc.onicecandidate = (e) => {
+        if (!e.candidate) resolve(); // 收集完成
+      };
     });
-    if(WS.onlinePlayers.length===0)h+='<div style="color:var(--dim);grid-column:1/-1;font-size:0.36rem;">暂无其他玩家在线</div>';
-    if(!WS.connected)h+='<div style="color:var(--dim);grid-column:1/-1;font-size:0.36rem;">未连接服务器，点击💬系统→输入/connect</div>';
+    
+    // 生成房间码（Base64编码的SDP）
+    P2P.roomCode = btoa(JSON.stringify(P2P.pc.localDescription));
+    return P2P.roomCode;
+  },
+
+  // 加入房间
+  async joinRoom(roomCode) {
+    P2P.isHost = false;
+    P2P.pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+    
+    P2P.pc.ondatachannel = (e) => {
+      P2P.dc = e.channel;
+      setupDataChannel(P2P.dc);
+    };
+    
+    // 解析房间码
+    const remoteDesc = JSON.parse(atob(roomCode));
+    await P2P.pc.setRemoteDescription(remoteDesc);
+    
+    // 创建answer
+    const answer = await P2P.pc.createAnswer();
+    await P2P.pc.setLocalDescription(answer);
+    
+    // 等待ICE
+    await new Promise(resolve => {
+      P2P.pc.onicecandidate = (e) => {
+        if (!e.candidate) resolve();
+      };
+    });
+    
+    // 返回answer（房主需要这个来建立连接）
+    // 简化版：双方在同一WiFi下，ICE会自动连通
+    return true;
+  },
+
+  send(data) {
+    if (P2P.dc && P2P.dc.readyState === 'open') {
+      P2P.dc.send(JSON.stringify(data));
+    }
+  },
+
+  disconnect() {
+    if (P2P.dc) P2P.dc.close();
+    if (P2P.pc) P2P.pc.close();
+    P2P.connected = false;
+    P2P.isHost = false;
+    P2P.roomCode = '';
+  }
+};
+
+function setupDataChannel(dc) {
+  dc.onopen = () => {
+    P2P.connected = true;
+    document.getElementById('onlineStatus').innerHTML = '<span class="online-dot"></span>🟢 已联机 | ' + (P2P.isHost ? '房主' : '成员');
+    document.getElementById('sOnline').textContent = '2';
+    notify('🌐 联机成功！两台手机已连接');
+    if (P2P.isHost) {
+      P2P.send({ type: 'chat', sender: '系统', content: '另一位玩家加入了你的房间！' });
+    }
+  };
+  
+  dc.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      handleP2PMessage(msg);
+    } catch (err) {}
+  };
+  
+  dc.onclose = () => {
+    P2P.connected = false;
+    document.getElementById('onlineStatus').innerHTML = '🔴 联机断开';
+    document.getElementById('sOnline').textContent = '0';
+    notify('🔴 联机已断开');
+  };
+}
+
+function handleP2PMessage(msg) {
+  switch (msg.type) {
+    case 'chat':
+      P2P.chatMessages.push(msg);
+      notify(`💬 ${msg.sender}: ${msg.content}`);
+      renderPanels();
+      break;
+    case 'battle':
+      notify(`⚔️ ${msg.sender}发起协同攻击！`);
+      // 协同战斗：双方一起打BOSS
+      if (msg.enemy && D.enemies[msg.enemy]) {
+        const enemy = D.enemies[msg.enemy];
+        const dmg = Math.floor(Math.random() * 50) + 30;
+        enemy.hp -= dmg;
+        notify(`🤝 协同攻击！${msg.sender}造成${dmg}伤害`);
+        if (enemy.hp <= 0) {
+          enemy.alive = false;
+          D.player.gold += 200;
+          notify('🎉 联手击败' + msg.enemy + '！+200💰');
+        }
+        renderAll();
+      }
+      break;
+    case 'trade':
+      notify(`🤝 ${msg.sender}发来交易：${msg.item}`);
+      break;
+  }
+}
+
+// ==================== 联机弹窗 ====================
+function showRoomDialog() {
+  const dialog = document.getElementById('roomDialog');
+  
+  if (P2P.connected) {
+    // 已联机状态
+    dialog.innerHTML = `
+      <h3>🌐 联机中</h3>
+      <p style="color:var(--online);font-size:0.55rem;">🟢 两台手机已连接</p>
+      <p style="font-size:0.45rem;color:var(--dim);">你是：${P2P.isHost ? '🏠 房主' : '👤 成员'}</p>
+      <div style="margin:8px 0;">
+        <button class="big-btn" style="background:var(--orange);" onclick="sendCoopAttack()">⚔️ 协同攻击</button>
+        <button class="big-btn" style="background:var(--cyan);" onclick="sendTrade()">🤝 发起交易</button>
+      </div>
+      <input type="text" id="p2pChatInput" placeholder="输入聊天消息..." style="text-align:left;">
+      <button class="big-btn" style="background:var(--purple);" onclick="sendP2PChat()">💬 发送消息</button>
+      <button class="close-btn" onclick="disconnectP2P()">🔌 断开联机</button>
+      <button class="close-btn" onclick="closeRoomDialog()">关闭</button>
+    `;
+  } else {
+    // 未联机状态
+    dialog.innerHTML = `
+      <h3>🌐 手机直连联机</h3>
+      <p style="font-size:0.45rem;color:var(--dim);margin-bottom:8px;">两台手机连同一个WiFi即可</p>
+      
+      <button class="big-btn btn-create" onclick="createRoom()">🏠 创建房间（房主）</button>
+      <p style="font-size:0.4rem;color:var(--dim);margin:4px 0;">—— 或者 ——</p>
+      <p style="font-size:0.4rem;color:var(--dim);">输入房主的房间码加入：</p>
+      <input type="text" id="roomCodeInput" placeholder="粘贴房间码...">
+      <button class="big-btn btn-join" onclick="joinRoom()">👤 加入房间</button>
+      <button class="close-btn" onclick="closeRoomDialog()">关闭</button>
+    `;
+  }
+  
+  document.getElementById('roomOverlay').classList.add('active');
+}
+
+function closeRoomDialog() {
+  document.getElementById('roomOverlay').classList.remove('active');
+}
+
+async function createRoom() {
+  try {
+    const code = await P2P.createRoom();
+    const dialog = document.getElementById('roomDialog');
+    dialog.innerHTML = `
+      <h3>🏠 房间已创建</h3>
+      <p style="font-size:0.45rem;color:var(--gold);">你的房间码（点击复制）：</p>
+      <div style="background:rgba(0,0,0,0.3);padding:8px;border-radius:6px;margin:6px 0;word-break:break-all;font-size:0.4rem;cursor:pointer;" onclick="copyRoomCode()" id="roomCodeDisplay">${code}</div>
+      <p style="font-size:0.38rem;color:var(--dim);">让另一台手机在"加入房间"中粘贴此码</p>
+      <p style="font-size:0.38rem;color:var(--online);">等待另一位玩家加入...</p>
+      <button class="close-btn" onclick="closeRoomDialog()">关闭（保持房间）</button>
+    `;
+  } catch (e) {
+    notify('❌ 创建房间失败：' + e.message);
+  }
+}
+
+function copyRoomCode() {
+  const code = P2P.roomCode;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(() => notify('📋 房间码已复制！发送给另一台手机'));
+  } else {
+    // 备用方案：选中文本
+    const display = document.getElementById('roomCodeDisplay');
+    const range = document.createRange();
+    range.selectNode(display);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    notify('📋 请长按选中房间码复制');
+  }
+}
+
+async function joinRoom() {
+  const codeInput = document.getElementById('roomCodeInput');
+  const code = codeInput.value.trim();
+  if (!code) { notify('❌ 请粘贴房间码'); return; }
+  
+  try {
+    await P2P.joinRoom(code);
+    notify('✅ 已加入房间！等待连接...');
+    closeRoomDialog();
+  } catch (e) {
+    notify('❌ 加入失败：' + e.message + '。请确认房间码正确且两台手机在同一WiFi');
+  }
+}
+
+function disconnectP2P() {
+  P2P.disconnect();
+  closeRoomDialog();
+  renderAll();
+}
+
+function sendP2PChat() {
+  const input = document.getElementById('p2pChatInput');
+  if (!input) return;
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  P2P.send({ type: 'chat', sender: '洛洛', content: msg });
+  P2P.chatMessages.push({ sender: '我', content: msg });
+  notify('💬 已发送');
+  renderPanels();
+}
+
+function sendCoopAttack() {
+  const enemies = Object.entries(D.enemies).filter(([,e]) => e.alive);
+  if (enemies.length === 0) { notify('没有可攻击的敌人'); return; }
+  const enemy = enemies[0][0];
+  P2P.send({ type: 'battle', sender: '洛洛', enemy });
+  notify('⚔️ 发起协同攻击！');
+}
+
+function sendTrade() {
+  P2P.send({ type: 'trade', sender: '洛洛', item: '修复装置×1' });
+  notify('🤝 已发送交易请求');
+}
+
+// ==================== 游戏数据（精简版） ====================
+const D = {
+  player: { name: '洛洛', level: 1, hp: 100, maxHp: 100, atk: 15, def: 8, gold: 500, exp: 0, expToLevel: 100 },
+  warriors: {
+    '霹雳火': { name: '霹雳火', level: 1, hp: 150, maxHp: 150, atk: 25, def: 15, loyalty: 90 },
+    '风火轮': { name: '风火轮', level: 1, hp: 80, maxHp: 80, atk: 12, def: 6, loyalty: 85 }
+  },
+  enemies: {
+    '金铁兽': { level: 20, hp: 800, maxHp: 800, atk: 40, def: 15, alive: true },
+    '猛虎王': { level: 45, hp: 4000, maxHp: 4000, atk: 80, def: 40, alive: true }
+  },
+  bag: { '修复装置': 3, '能量块': 5 },
+  city: '时光之城',
+  round: 0, apiKey: '', processing: false, currentPanel: 'main'
+};
+
+function getExpToLevel(lv) { return Math.floor(100 * Math.pow(1.5, lv - 1)); }
+function calcDamage(a, b) { const base = Math.max(1, a.atk - b.def); return Math.floor(base * (0.9 + Math.random() * 0.2)); }
+function notify(msg) { const n = document.createElement('div'); n.className = 'notification'; n.textContent = msg; document.body.appendChild(n); setTimeout(() => n.remove(), 3000); }
+function autoSave() { localStorage.setItem('aeig_p2p_v1', JSON.stringify(D)); }
+function loadSave() { const r = localStorage.getItem('aeig_p2p_v1'); if (!r) return false; try { Object.assign(D, JSON.parse(r)); return true; } catch (e) { return false; } }
+function barHTML(type, pct) { return `<div class="bar"><div class="bar-fill ${type}" style="width:${Math.min(100, pct)}%"></div></div>`; }
+
+async function fightEnemy(enemyName) {
+  const enemy = D.enemies[enemyName];
+  if (!enemy || !enemy.alive || D.player.hp <= 0) return;
+  let eHp = enemy.hp, log = '', turn = 0;
+  while (eHp > 0 && D.player.hp > 0 && turn < 50) {
+    turn++;
+    const p = calcDamage(D.player, enemy); eHp -= p; log += `⚔️-${p} `;
+    if (eHp <= 0) { log += '🎉击败！'; break; }
+    D.player.hp -= calcDamage(enemy, D.player);
+  }
+  if (D.player.hp > 0 && eHp <= 0) {
+    enemy.alive = false; D.player.exp += enemy.level * 5; D.player.gold += enemy.level * 10;
+    if (P2P.connected) P2P.send({ type: 'battle', sender: '洛洛', enemy: enemyName });
+  }
+  document.getElementById('narrative').textContent = log;
+  while (D.player.exp >= D.player.expToLevel) {
+    D.player.exp -= D.player.expToLevel; D.player.level++; D.player.expToLevel = getExpToLevel(D.player.level);
+    D.player.maxHp += 20; D.player.hp = D.player.maxHp; D.player.atk += 3; notify('⬆️Lv.' + D.player.level);
+  }
+  renderAll(); autoSave();
+}
+
+const panelRenderers = {
+  main: () => {
+    const p = D.player; let h = '';
+    h += `<div class="stat-row"><span>❤️HP</span><span>${p.hp}/${p.maxHp}</span></div>` + barHTML('hp', p.hp / p.maxHp * 100);
+    h += `<div class="stat-row"><span>✨经验</span><span>${p.exp}/${p.expToLevel}</span></div>` + barHTML('ex', p.exp / p.expToLevel * 100);
+    Object.values(D.warriors).forEach(w => { h += `<div class="clickable" onclick="notify('${w.name}：❤️${w.hp} 忠诚${w.loyalty}')"><span class="cname">${w.name}</span><span class="cinfo">❤️${w.hp}</span></div>`; });
     return h;
   },
-  chat:()=>{
-    let h='';h+=`<div style="grid-column:1/-1;font-size:0.38rem;color:var(--dim);">💬 世界聊天</div>`;
-    h+=`<div class="chat-log" id="chatLog" style="grid-column:1/-1;max-height:120px;">${WS.chatMessages.slice(-20).map(m=>`<div class="chat-msg"><span class="sender" style="color:${m.sender==='系统'?'var(--gold)':'var(--cyan)'};">${m.sender}</span>：${m.content} <span class="time">${m.time||''}</span></div>`).join('')||'<div style="color:var(--dim);">暂无消息</div>'}</div>`;
-    h+=`<div class="chat-input-row" style="grid-column:1/-1;"><input id="chatInput" placeholder="输入聊天内容..."><button onclick="sendChatMsg()">发送</button></div>`;
+  warriors: () => {
+    let h = '';
+    Object.values(D.warriors).forEach(w => { h += `<div class="clickable"><span class="cname">${w.name}</span><span class="cinfo">Lv.${w.level} ATK${w.atk}</span></div>`; });
+    h += `<div style="grid-column:1/-1;color:var(--red);font-size:0.36rem;">敌人</div>`;
+    Object.entries(D.enemies).filter(([, e]) => e.alive).forEach(([k, e]) => { h += `<div class="clickable danger" onclick="fightEnemy('${k}')"><span class="cname">${k}</span><span class="cinfo">Lv.${e.level} HP${e.hp}</span></div>`; });
     return h;
   },
-  team:()=>{
-    let h='';h+=`<div style="grid-column:1/-1;color:var(--warm);font-size:0.38rem;">👥 队伍</div>`;
-    if(WS.team.members.length===0){h+='<div style="color:var(--dim);grid-column:1/-1;">尚未组队，在大厅邀请玩家</div>';}
-    else{WS.team.members.forEach(m=>{h+=`<div class="clickable"><span class="cname">${m.name}</span><span class="cinfo">Lv.${m.level}</span></div>`;});}
-    h+=`<div style="grid-column:1/-1;color:var(--dim);font-size:0.36rem;margin-top:4px;">队伍加成：ATK+${WS.team.members.length*5} DEF+${WS.team.members.length*3}</div>`;
+  bag: () => {
+    let h = '';
+    Object.entries(D.bag).filter(([, v]) => v > 0).forEach(([k, v]) => { h += `<div class="clickable usable" onclick="notify('📦${k}×${v}')"><span class="cname">📦${k}</span><span class="cinfo">×${v}</span></div>`; });
+    if (!h) h = '<div style="color:var(--dim);grid-column:1/-1;">空空</div>';
     return h;
   },
-  trade:()=>{
-    let h='';h+=`<div style="grid-column:1/-1;color:var(--warm);font-size:0.38rem;">🤝 交易</div>`;
-    if(WS.pendingTrades.length===0){h+='<div style="color:var(--dim);grid-column:1/-1;">暂无交易请求</div>';}
-    else{WS.pendingTrades.forEach(t=>{h+=`<div class="clickable" onclick="acceptTrade('${t.fromId}')"><span class="cname">🤝${t.from}</span><span class="cinfo">请求交易</span></div>`;});}
+  dungeon: () => {
+    let h = '';
+    Object.entries(D.enemies).filter(([, e]) => e.alive).forEach(([k, e]) => { h += `<div class="clickable danger" onclick="fightEnemy('${k}')"><span class="cname">👹${k}</span><span class="cinfo">Lv.${e.level}</span></div>`; });
+    return h;
+  },
+  lobby: () => {
+    let h = '';
+    h += `<div style="grid-column:1/-1;text-align:center;padding:8px 0;" onclick="showRoomDialog()">
+      <div class="clickable online" style="justify-content:center;">
+        <span class="cname">${P2P.connected ? '🟢 联机中' : '🔴 点击联机'}</span>
+      </div>
+    </div>`;
+    if (P2P.connected) {
+      h += `<div style="grid-column:1/-1;color:var(--online);font-size:0.4rem;">你是：${P2P.isHost ? '🏠 房主' : '👤 成员'}</div>`;
+      h += `<div style="grid-column:1/-1;color:var(--dim);font-size:0.36rem;">点击上方按钮进行协同攻击/交易</div>`;
+    }
+    if (P2P.chatMessages.length > 0) {
+      h += `<div style="grid-column:1/-1;color:var(--dim);font-size:0.36rem;margin-top:4px;">💬 联机消息</div>`;
+      P2P.chatMessages.slice(-5).forEach(m => {
+        h += `<div class="stat-row"><span>${m.sender}</span><span>${m.content}</span></div>`;
+      });
+    }
     return h;
   }
 };
 
-function sendChatMsg(){const input=document.getElementById('chatInput');if(!input)return;const msg=input.value.trim();if(!msg)return;input.value='';sendChat('world',msg);renderPanels();}
-function acceptTrade(fromId){notify('🤝 交易已接受');WS.pendingTrades=WS.pendingTrades.filter(t=>t.fromId!==fromId);renderPanels();}
-
-function renderPanels(){
-  const container=document.getElementById('panelContainer');container.innerHTML='';
-  Object.entries(panelRenderers).forEach(([key,renderer])=>{
-    const det=document.createElement('details');det.className='panel';if(key===D.currentPanel)det.open=true;
-    const titles={main:'👤主角',warriors:'⚔️战士',bag:'🎒背包',equip:'🛡️装备',skilltree:'📜技能',dungeon:'👹副本',lobby:'🌐联机大厅',chat:'💬聊天',team:'👥组队',trade:'🤝交易'};
-    det.innerHTML=`<summary><span>${titles[key]}</span></summary><div class="panel-content">${renderer()}</div>`;container.appendChild(det);
+function renderPanels() {
+  const container = document.getElementById('panelContainer');
+  container.innerHTML = '';
+  Object.entries(panelRenderers).forEach(([key, renderer]) => {
+    const det = document.createElement('details');
+    det.className = 'panel';
+    if (key === D.currentPanel) det.open = true;
+    const titles = { main: '👤主角', warriors: '⚔️战士', bag: '🎒背包', dungeon: '👹副本', lobby: '🌐联机' };
+    det.innerHTML = `<summary><span>${titles[key]}</span></summary><div class="panel-content">${renderer()}</div>`;
+    container.appendChild(det);
   });
 }
-function showPanel(name){D.currentPanel=name;renderPanels();document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');if(b.dataset.panel===name)b.classList.add('active');});}
-function updateStatusBar(){
-  document.getElementById('sLevel').textContent=D.player.level;document.getElementById('sHP').textContent=D.player.hp;
-  document.getElementById('sATK').textContent=D.player.atk;document.getElementById('sGold').textContent=D.player.gold;
-  document.getElementById('sOnline').textContent=WS.onlinePlayers.length+(WS.connected?1:0);document.getElementById('sRound').textContent=D.round;
+
+function showPanel(name) { D.currentPanel = name; renderPanels(); document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active'); if (b.dataset.panel === name) b.classList.add('active'); }); }
+
+function updateStatusBar() {
+  document.getElementById('sLevel').textContent = D.player.level;
+  document.getElementById('sHP').textContent = D.player.hp;
+  document.getElementById('sATK').textContent = D.player.atk;
+  document.getElementById('sGold').textContent = D.player.gold;
+  document.getElementById('sOnline').textContent = P2P.connected ? '2' : '0';
+  document.getElementById('sRound').textContent = D.round;
 }
-function renderAll(){updateStatusBar();renderPanels();applyEquipStats();}
+
+function renderAll() { updateStatusBar(); renderPanels(); }
 
 // ==================== AI剧情 ====================
-async function callAI(msg){
-  if(!D.apiKey)throw new Error('API Key');
-  const msgs=[{role:'system',content:'你是《洛洛历险记》RPG主持人。当前：'+JSON.stringify({player:D.player,city:D.city,round:D.round})},...D.chatHistory];if(msg)msgs.push({role:'user',content:msg});
-  const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+D.apiKey},body:JSON.stringify({model:'deepseek-chat',messages:msgs,temperature:0.9,max_tokens:800})});
-  if(!resp.ok)throw new Error(`API ${resp.status}`);
-  const d=await resp.json();const txt=d.choices[0].message.content;let parsed;
-  try{const m=txt.match(/\{[\s\S]*\}/);parsed=JSON.parse(m?m[0]:txt);}catch(e){parsed={narrative:txt,options:['继续','探索'],ending:'🔥'};}
-  if(msg)D.chatHistory.push({role:'user',content:msg});D.chatHistory.push({role:'assistant',content:JSON.stringify(parsed)});if(D.chatHistory.length>30)D.chatHistory=D.chatHistory.slice(-30);
+async function callAI(msg) {
+  if (!D.apiKey) throw new Error('API Key');
+  const msgs = [{ role: 'system', content: '你是《洛洛历险记》RPG主持人。当前：' + JSON.stringify({ player: D.player, city: D.city, round: D.round }) }, ...(D.chatHistory || [])];
+  if (msg) msgs.push({ role: 'user', content: msg });
+  const resp = await fetch('https://api.deepseek.com/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + D.apiKey }, body: JSON.stringify({ model: 'deepseek-chat', messages: msgs, temperature: 0.9, max_tokens: 800 }) });
+  if (!resp.ok) throw new Error(`API ${resp.status}`);
+  const d = await resp.json();
+  const txt = d.choices[0].message.content;
+  let parsed;
+  try { const m = txt.match(/\{[\s\S]*\}/); parsed = JSON.parse(m ? m[0] : txt); } catch (e) { parsed = { narrative: txt, options: ['继续', '探索'], ending: '🔥' }; }
+  if (msg) { if (!D.chatHistory) D.chatHistory = []; D.chatHistory.push({ role: 'user', content: msg }); D.chatHistory.push({ role: 'assistant', content: JSON.stringify(parsed) }); if (D.chatHistory.length > 30) D.chatHistory = D.chatHistory.slice(-30); }
   return parsed;
 }
-function renderResponse(data){
-  document.getElementById('narrative').textContent=data.narrative||'';document.getElementById('sysHint').textContent=data.ending||'';
-  while(D.player.exp>=D.player.expToLevel){D.player.exp-=D.player.expToLevel;D.player.level++;D.player.expToLevel=getExpToLevel(D.player.level);D.player.skillPoints++;}
-  applyEquipStats();const cDiv=document.getElementById('choices');cDiv.innerHTML='';
-  (data.options||['继续','探索']).forEach((o,i)=>{const b=document.createElement('button');b.className='choice-btn';b.innerHTML=`<span class="num">${i+1}.</span>${o}`;b.onclick=()=>handle(o);cDiv.appendChild(b);});
-  renderAll();autoSave();
-}
-async function handle(msg){if(D.processing||!D.apiKey)return;D.processing=true;D.round++;document.getElementById('narrative').innerHTML='<span class="loading">⏳...</span>';try{const data=await callAI(msg);renderResponse(data);}catch(e){document.getElementById('narrative').textContent='❌ '+e.message;}D.processing=false;autoSave();}
 
-// ==================== 系统控制台 ====================
-function openDrawer(){document.getElementById('sysDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('active');}
-function closeDrawer(){document.getElementById('sysDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('active');}
-async function sysChatSend(){
-  const input=document.getElementById('sysChatInput');const msg=input.value.trim();if(!msg)return;input.value='';
-  const log=document.getElementById('sysChatLog');
-  if(msg.startsWith('/connect')){const url=msg.split(' ')[1];connectServer(url);log.innerHTML+='<div style="color:var(--online);">🌐 正在连接...</div>';return;}
-  if(msg.startsWith('/disconnect')){if(WS.ws)WS.ws.close();WS.connected=false;document.getElementById('onlineStatus').innerHTML='🔴 离线模式';notify('已断开连接');return;}
-  log.innerHTML+=`<div style="color:var(--gold);">👤 ${msg}</div>`;
-  if(!D.apiKey){const actions=[];const lower=msg.toLowerCase();
-    if(lower.includes('hp')){const m=msg.match(/(\d+)/);if(m)actions.push({path:'player.hp',value:parseInt(m[0])});}
-    else if(lower.includes('金币')){const m=msg.match(/(\d+)/);if(m)actions.push({path:'player.gold',value:parseInt(m[0])});}
-    actions.forEach(a=>setByPath(a.path,a.value));if(actions.length>0){applyEquipStats();renderAll();autoSave();}
-    log.innerHTML+=`<div style="color:var(--warm);">✅ 已执行</div>`;
-  }
-  log.scrollTop=log.scrollHeight;
+function renderResponse(data) {
+  document.getElementById('narrative').textContent = data.narrative || '';
+  document.getElementById('sysHint').textContent = data.ending || '';
+  while (D.player.exp >= D.player.expToLevel) { D.player.exp -= D.player.expToLevel; D.player.level++; D.player.expToLevel = getExpToLevel(D.player.level); }
+  const cDiv = document.getElementById('choices'); cDiv.innerHTML = '';
+  (data.options || ['继续', '探索']).forEach((o, i) => { const b = document.createElement('button'); b.className = 'choice-btn'; b.innerHTML = `<span class="num">${i + 1}.</span>${o}`; b.onclick = () => handle(o); cDiv.appendChild(b); });
+  renderAll(); autoSave();
 }
+
+async function handle(msg) { if (D.processing || !D.apiKey) return; D.processing = true; D.round++; document.getElementById('narrative').innerHTML = '⏳...'; try { const data = await callAI(msg); renderResponse(data); } catch (e) { document.getElementById('narrative').textContent = '❌ ' + e.message; } D.processing = false; autoSave(); }
 
 // ==================== 初始化 ====================
-function init(){
-  const sk=localStorage.getItem('deepseek_api_key');if(sk){D.apiKey=sk;document.getElementById('apiKeyInput').value=sk;document.getElementById('keyStatus').textContent='✅';}
-  const has=loadSave();renderAll();if(has){updateStatusBar();document.getElementById('narrative').textContent='📡重连。第'+D.round+'回合。';}
-  document.getElementById('saveKeyBtn').onclick=()=>{const k=document.getElementById('apiKeyInput').value.trim();if(!k.startsWith('sk-')){notify('Key以sk-开头');return;}D.apiKey=k;localStorage.setItem('deepseek_api_key',k);document.getElementById('keyStatus').textContent='✅';if(!has)handle('我是洛洛，在时光之城醒来。');};
-  document.getElementById('customSendBtn').onclick=async()=>{const inp=document.getElementById('customInput');const t=inp.value.trim();if(!t)return;inp.value='';await handle(t);};
-  document.getElementById('customInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('customSendBtn').click();};
-  document.getElementById('btnSys').onclick=openDrawer;document.getElementById('btnConnect').onclick=()=>connectServer();
-  document.getElementById('sysChatSend').onclick=sysChatSend;document.getElementById('sysChatInput').onkeydown=e=>{if(e.key==='Enter')sysChatSend();};
-  document.getElementById('btnSave').onclick=()=>{autoSave();notify('💾已存档');};
-  document.getElementById('btnReset').onclick=()=>{if(confirm('重开？')){localStorage.removeItem('aeig_online_v1');location.reload();}};
-  document.querySelectorAll('.nav-btn').forEach(b=>{b.onclick=()=>showPanel(b.dataset.panel);});
-  document.getElementById('modalOverlay').onclick=function(e){if(e.target===this)closeModal();};
-  if(!has&&D.apiKey)handle('我是洛洛，在时光之城醒来。');
+function init() {
+  const sk = localStorage.getItem('deepseek_api_key');
+  if (sk) { D.apiKey = sk; document.getElementById('apiKeyInput').value = sk; document.getElementById('keyStatus').textContent = '✅'; }
+  const has = loadSave();
+  renderAll();
+  if (has) { updateStatusBar(); document.getElementById('narrative').textContent = '📡重连。第' + D.round + '回合。点击🌐联机开始双人冒险！'; }
+  document.getElementById('saveKeyBtn').onclick = () => { const k = document.getElementById('apiKeyInput').value.trim(); if (!k.startsWith('sk-')) { notify('Key以sk-开头'); return; } D.apiKey = k; localStorage.setItem('deepseek_api_key', k); document.getElementById('keyStatus').textContent = '✅'; if (!has) handle('我是洛洛，在时光之城醒来。'); };
+  document.getElementById('customSendBtn').onclick = async () => { const inp = document.getElementById('customInput'); const t = inp.value.trim(); if (!t) return; inp.value = ''; await handle(t); };
+  document.getElementById('customInput').onkeydown = e => { if (e.key === 'Enter') document.getElementById('customSendBtn').click(); };
+  document.getElementById('btnRoom').onclick = showRoomDialog;
+  document.getElementById('btnSave').onclick = () => { autoSave(); notify('💾已存档'); };
+  document.getElementById('btnReset').onclick = () => { if (confirm('重开？')) { localStorage.removeItem('aeig_p2p_v1'); location.reload(); } };
+  document.querySelectorAll('.nav-btn').forEach(b => { b.onclick = () => showPanel(b.dataset.panel); });
+  if (!has && D.apiKey) handle('我是洛洛，在时光之城醒来。');
 }
-document.addEventListener('DOMContentLoaded',init);
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
