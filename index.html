@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>洛洛历险记 · 稳定联机</title>
+<title>洛洛历险记 · 云端联机</title>
 <style>
   :root {
     --bg: #060b18; --panel: rgba(10,16,30,0.88); --cyan: #00d4ff; --gold: #f0c040;
     --red: #ff4060; --green: #40e890; --purple: #a070ff; --orange: #ff8040;
     --text: #d0d4e0; --dim: #6070a0; --border: rgba(0,200,255,0.22);
-    --energy: #ffe860; --warm: #ffb088; --online: #40e890;
+    --warm: #ffb088; --online: #40e890;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:var(--bg);font-family:'PingFang SC','Microsoft YaHei',sans-serif;min-height:100vh;padding:4px 4px 100px;color:var(--text);overflow-x:hidden;}
@@ -102,7 +102,7 @@
 <body>
 
 <div class="game-container">
-  <div class="title-area"><h1>⚙️ 洛洛历险记</h1><div class="sub">AI对话已修复 | 联机可选</div></div>
+  <div class="title-area"><h1>⚙️ 洛洛历险记 · 云端联机</h1><div class="sub" id="onlineStatus">☁️ 未连接 | 点 🌐 联机</div></div>
 
   <div class="status-row">
     <div class="status-card"><div class="lbl">主角</div><div class="val cyan" id="sName">洛洛</div></div>
@@ -110,7 +110,7 @@
     <div class="status-card"><div class="lbl">HP</div><div class="val red" id="sHP">100</div></div>
     <div class="status-card"><div class="lbl">ATK</div><div class="val orange" id="sATK">15</div></div>
     <div class="status-card"><div class="lbl">💰</div><div class="val gold" id="sGold">500</div></div>
-    <div class="status-card"><div class="lbl">🌐</div><div class="val online" id="sOnline">0</div></div>
+    <div class="status-card"><div class="lbl">☁️</div><div class="val online" id="sOnline">0</div></div>
     <div class="status-card"><div class="lbl">回合</div><div class="val pink" id="sRound">0</div></div>
   </div>
 
@@ -130,6 +130,7 @@
   <div class="input-row"><input type="text" id="customInput" placeholder="✍ 行动..."><button id="customSendBtn">执行</button></div>
   <div class="quick-row">
     <button class="quick-btn" id="btnSys"><span class="ico">💬</span></button>
+    <button class="quick-btn" id="btnRoom"><span class="ico">🌐</span></button>
     <button class="quick-btn" id="btnSave"><span class="ico">💾</span></button>
     <button class="quick-btn" id="btnSign"><span class="ico">📅</span></button>
     <button class="quick-btn" id="btnReset"><span class="ico">🔄</span></button>
@@ -191,13 +192,13 @@ function buyItem(name){const item=D.shopItems[name];if(!item||D.player.gold<item
 function craftItem(name){const r=D.recipes[name];if(!r||!Object.entries(r.mats).every(([k,v])=>(D.bag[k]||0)>=v))return;Object.entries(r.mats).forEach(([k,v])=>D.bag[k]-=v);D.bag['高级修复装置']=(D.bag['高级修复装置']||0)+1;notify('🔮合成高级修复装置');renderAll();autoSave();}
 function barHTML(type,pct){return `<div class="bar"><div class="bar-fill ${type}" style="width:${Math.min(100,pct)}%"></div></div>`;}
 function notify(msg){const n=document.createElement('div');n.className='notification';n.textContent=msg;document.body.appendChild(n);setTimeout(()=>n.remove(),3000);}
-function autoSave(){localStorage.setItem('aeig_stable',JSON.stringify(D));}
-function loadSave(){const r=localStorage.getItem('aeig_stable');if(!r)return false;try{Object.assign(D,JSON.parse(r));applyEquipStats();return true;}catch(e){return false;}}
+function autoSave(){localStorage.setItem('aeig_cloud',JSON.stringify(D));}
+function loadSave(){const r=localStorage.getItem('aeig_cloud');if(!r)return false;try{Object.assign(D,JSON.parse(r));applyEquipStats();return true;}catch(e){return false;}}
 function openModal(h){document.getElementById('modalDialog').innerHTML=h;document.getElementById('modalOverlay').classList.add('active');}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('active');}
 function setByPath(path,val){const parts=path.split('.');let obj=D;for(let i=0;i<parts.length-1;i++){if(!obj[parts[i]])obj[parts[i]]={};obj=obj[parts[i]];}obj[parts[parts.length-1]]=Math.max(-999999,val);}
 
-// ==================== AI对话（已修复） ====================
+// ==================== AI对话 ====================
 function openWarriorModal(name){
   const w=D.warriors[name];if(!w)return;
   const stats=[['等级','Lv.'+w.level],['HP',w.hp+'/'+w.maxHp],['ATK',w.atk],['技能',w.skill],['忠诚',w.loyalty]].map(([k,v])=>`<div class="stat-row"><span>${k}</span><span>${v}</span></div>`).join('');
@@ -218,112 +219,123 @@ async function talkToWarrior(name){
 }
 function refreshWarriorChat(name){const log=document.getElementById('warriorChat');if(!log)return;const w=D.warriors[name];log.innerHTML=w.chatHistory.map(m=>`<div style="color:${m.role==='player'?'var(--gold)':'var(--warm)'};">${m.role==='player'?'👤':'🤖'+w.name}：${m.content}</div>`).join('');log.scrollTop=log.scrollHeight;}
 
-// ==================== 联机系统（WebRTC + 云中转选项） ====================
-const P2P={pc:null,dc:null,connected:false,isHost:false,offerCode:'',answerCode:'',chatMessages:[],timeout:null,serverUrl:''};
-function updateOnlineStatus(text,color='var(--dim)'){document.getElementById('onlineStatus')&&(document.getElementById('onlineStatus').innerHTML=`<span style="color:${color};">${text}</span>`);}
-function setupDataChannel(dc){
-  P2P.dc=dc;
-  dc.onopen=()=>{P2P.connected=true;clearTimeout(P2P.timeout);updateOnlineStatus('🟢 联机中','var(--online)');document.getElementById('sOnline').textContent='2';notify('🌐 联机成功！');if(P2P.isHost)sendP2P({type:'system',content:'欢迎！'});};
-  dc.onmessage=(e)=>{try{const msg=JSON.parse(e.data);if(msg.type==='chat'){P2P.chatMessages.push(msg);notify(`💬 ${msg.sender}: ${msg.content}`);}if(msg.type==='coopBattle'){handleCoopBattle(msg);}}catch(err){}};
-  dc.onclose=()=>{P2P.connected=false;updateOnlineStatus('🔴 断开');document.getElementById('sOnline').textContent='0';};
-}
-function handleCoopBattle(msg){const enemy=D.enemies[msg.enemy];if(enemy&&enemy.alive){const dmg=Math.floor(Math.random()*80)+20;enemy.hp-=dmg;notify(`🤝 ${msg.sender}协同造成${dmg}伤害`);if(enemy.hp<=0){enemy.alive=false;notify('🎉 联手击败'+msg.enemy);}renderAll();}}
-function sendP2P(data){if(P2P.dc&&P2P.dc.readyState==='open')P2P.dc.send(JSON.stringify(data));}
+// ==================== 云端联机系统（WebSocket） ====================
+let cloudSocket = null;
+let cloudConnected = false;
+let cloudUrl = localStorage.getItem('aeig_cloud_url') || '';
 
-async function createRoom(){
-  updateOnlineStatus('⏳ 创建中...','var(--warm)');P2P.isHost=true;
-  try{
-    P2P.pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
-    P2P.dc=P2P.pc.createDataChannel('game');setupDataChannel(P2P.dc);
-    const offer=await P2P.pc.createOffer();await P2P.pc.setLocalDescription(offer);
-    await new Promise((resolve,reject)=>{P2P.timeout=setTimeout(()=>reject(new Error('超时')),15000);P2P.pc.onicecandidate=(e)=>{if(!e.candidate){clearTimeout(P2P.timeout);resolve();}};});
-    P2P.offerCode=btoa(JSON.stringify(P2P.pc.localDescription));
-    showRoomDialog('offer');updateOnlineStatus('🟡 等待加入','var(--gold)');
-  }catch(e){updateOnlineStatus('❌ 创建失败','var(--red)');notify('创建房间失败，请切换网络或使用云中转');}
-}
-async function joinRoom(code){
-  updateOnlineStatus('⏳ 加入中...','var(--warm)');P2P.isHost=false;
-  try{
-    P2P.pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
-    P2P.pc.ondatachannel=(e)=>{setupDataChannel(e.channel);};
-    const desc=JSON.parse(atob(code));await P2P.pc.setRemoteDescription(desc);
-    const answer=await P2P.pc.createAnswer();await P2P.pc.setLocalDescription(answer);
-    await new Promise((resolve,reject)=>{P2P.timeout=setTimeout(()=>reject(new Error('超时')),15000);P2P.pc.onicecandidate=(e)=>{if(!e.candidate){clearTimeout(P2P.timeout);resolve();}};});
-    P2P.answerCode=btoa(JSON.stringify(P2P.pc.localDescription));
-    showRoomDialog('answer');updateOnlineStatus('🟡 发回应答码','var(--gold)');
-  }catch(e){updateOnlineStatus('❌ 加入失败','var(--red)');notify('加入失败，请检查房间码');}
-}
-async function completeConnection(code){try{const desc=JSON.parse(atob(code));await P2P.pc.setRemoteDescription(desc);updateOnlineStatus('🟡 连接中...','var(--gold)');P2P.timeout=setTimeout(()=>{if(!P2P.connected)updateOnlineStatus('❌ 超时，可能是网络问题','var(--red)');},15000);}catch(e){updateOnlineStatus('❌ 无效码','var(--red)');}}
-function disconnectP2P(){if(P2P.dc)P2P.dc.close();if(P2P.pc)P2P.pc.close();P2P.connected=false;updateOnlineStatus('🔴 已断开');document.getElementById('sOnline').textContent='0';renderAll();}
+function updateOnlineStatus(text,color='var(--dim)'){document.getElementById('onlineStatus').innerHTML=`<span style="color:${color};">${text}</span>`;}
 
-function showRoomDialog(type){
-  const overlay=document.getElementById('roomOverlay');if(!overlay){createRoomOverlay();return;}
-  overlay.classList.add('active');
-  if(P2P.connected){
-    document.getElementById('roomDialog').innerHTML=`
-      <h3>🌐 联机中</h3><p style="color:var(--online);">🟢 已连接</p>
-      <button class="big-btn" onclick="sendP2P({type:'coopBattle',sender:'洛洛',enemy:'金铁兽'})">🤝协同打金铁兽</button>
-      <input id="p2pChatInput" placeholder="聊天..."><button onclick="sendP2PChat()">发送</button>
-      <button class="big-btn" style="background:var(--red);" onclick="disconnectP2P()">断开</button>
-      <button onclick="closeRoomDialog()">关闭</button>`;
-  }else if(type==='offer'){
-    document.getElementById('roomDialog').innerHTML=`
-      <h3>🏠 创建房间</h3><p>连接码（点击复制）：</p>
-      <div style="background:rgba(0,0,0,0.3);padding:6px;border-radius:5px;word-break:break-all;font-size:0.38rem;cursor:pointer;" onclick="copyText('${P2P.offerCode}')">${P2P.offerCode}</div>
-      <p style="font-size:0.35rem;color:var(--gold);">收到应答码后粘贴：</p>
-      <input id="answerInput" placeholder="粘贴应答码"><button class="big-btn" onclick="completeConnection(document.getElementById('answerInput').value)">完成连接</button>
-      <button onclick="closeRoomDialog()">稍后</button>`;
-  }else if(type==='answer'){
-    document.getElementById('roomDialog').innerHTML=`
-      <h3>👤 加入成功</h3><p>你的应答码（复制发回）：</p>
-      <div style="background:rgba(0,0,0,0.3);padding:6px;border-radius:5px;word-break:break-all;font-size:0.38rem;cursor:pointer;" onclick="copyText('${P2P.answerCode}')">${P2P.answerCode}</div>
-      <p style="color:var(--online);">等待房主完成连接...</p>
-      <button onclick="closeRoomDialog()">关闭</button>`;
-  }else{
-    document.getElementById('roomDialog').innerHTML=`
-      <h3>🌐 联机选择</h3>
-      <p style="font-size:0.42rem;color:var(--dim);margin-bottom:6px;">选择联机方式：</p>
-      <button class="big-btn btn-create" onclick="createRoom()">📱 WebRTC直连（免费，同WiFi）</button>
-      <p style="font-size:0.36rem;color:var(--dim);">⚠️ WebRTC可能因网络环境失败</p>
-      <hr style="border-color:rgba(255,255,255,0.1);margin:8px 0;">
-      <p style="font-size:0.42rem;color:var(--green);">✅ 100%成功的方案：</p>
-      <button class="big-btn btn-join" onclick="showCloudGuide()">☁️ 云中转服务器（一键部署）</button>
-      <button onclick="closeRoomDialog()">关闭</button>`;
+function connectCloudServer(url) {
+  if (cloudSocket) cloudSocket.close();
+  cloudUrl = url;
+  localStorage.setItem('aeig_cloud_url', url);
+  
+  try {
+    cloudSocket = new WebSocket(url);
+    
+    cloudSocket.onopen = () => {
+      cloudConnected = true;
+      document.getElementById('sOnline').textContent = '?';
+      updateOnlineStatus('☁️ 云联机中', 'var(--online)');
+      notify('☁️ 已连接到云服务器！');
+      
+      cloudSocket.send(JSON.stringify({
+        type: 'join',
+        name: D.player.name,
+        level: D.player.level,
+        city: '时光之城'
+      }));
+    };
+    
+    cloudSocket.onmessage = (e) => {
+      try {
+        const msg = JSON.parse(e.data);
+        
+        if (msg.type === 'system') {
+          notify(`📢 ${msg.content}`);
+          if (msg.onlineCount) document.getElementById('sOnline').textContent = msg.onlineCount;
+        }
+        else if (msg.type === 'chat') {
+          notify(`💬 ${msg.sender}: ${msg.content}`);
+        }
+        else if (msg.type === 'coopBattle') {
+          const enemy = D.enemies[msg.enemy];
+          if (enemy && enemy.alive) {
+            const dmg = Math.floor(Math.random() * 80) + 20;
+            enemy.hp -= dmg;
+            notify(`🤝 ${msg.sender}协同造成${dmg}伤害`);
+            if (enemy.hp <= 0) {
+              enemy.alive = false;
+              D.player.gold += 200;
+              notify('🎉 联手击败' + msg.enemy + '！');
+            }
+            renderAll();
+          }
+        }
+        else if (msg.type === 'trade') {
+          if (msg.action === 'request') notify(`🤝 ${msg.sender}发起交易：${msg.item}`);
+        }
+      } catch (err) {}
+    };
+    
+    cloudSocket.onclose = () => {
+      cloudConnected = false;
+      document.getElementById('sOnline').textContent = '0';
+      updateOnlineStatus('🔴 云连接断开');
+    };
+    
+    cloudSocket.onerror = () => {
+      notify('❌ 云服务器连接失败，请检查网址是否正确');
+    };
+  } catch (e) {
+    notify('❌ 连接失败: ' + e.message);
   }
 }
-function showCloudGuide(){
-  document.getElementById('roomDialog').innerHTML=`
-    <h3>☁️ 云中转联机（100%成功）</h3>
-    <p style="font-size:0.4rem;color:var(--dim);">1. 打开 <b>render.com</b> 注册（免费）</p>
-    <p style="font-size:0.4rem;color:var(--dim);">2. 创建Web Service，粘贴以下代码：</p>
-    <textarea readonly style="width:100%;height:150px;background:rgba(0,0,0,0.4);color:var(--green);font-size:0.35rem;border:1px solid var(--border);padding:4px;">const express=require('express');
-const http=require('http');
-const {Server}=require('socket.io');
-const app=express();const server=http.createServer(app);
-const io=new Server(server,{cors:{origin:'*'}});
-io.on('connection',(socket)=>{
-  socket.on('join',(data)=>{socket.join('world');socket.to('world').emit('playerJoined',data);});
-  socket.on('chat',(msg)=>{io.to('world').emit('chat',msg);});
-  socket.on('coopBattle',(data)=>{socket.to('world').emit('coopBattle',data);});
-});
-server.listen(process.env.PORT||3000);</textarea>
-    <p style="font-size:0.4rem;color:var(--dim);">3. 部署后获得网址，填入下方：</p>
-    <input id="cloudUrl" placeholder="https://你的服务.onrender.com">
-    <button class="big-btn btn-create" onclick="connectCloud(document.getElementById('cloudUrl').value)">连接云服务器</button>
-    <button onclick="showRoomDialog()">返回</button>`;
+
+function sendCloud(msg) {
+  if (cloudSocket && cloudSocket.readyState === WebSocket.OPEN) {
+    cloudSocket.send(JSON.stringify(msg));
+  }
 }
-function connectCloud(url){if(url){P2P.serverUrl=url;notify('☁️ 已设置云服务器，联机功能待扩展');closeRoomDialog();}}
-function copyText(text){navigator.clipboard.writeText(text).then(()=>notify('📋 已复制！'));}
+
+function disconnectCloud() {
+  if (cloudSocket) cloudSocket.close();
+  cloudConnected = false;
+  document.getElementById('sOnline').textContent = '0';
+  updateOnlineStatus('🔴 已断开');
+}
+
+// ==================== 联机弹窗 ====================
+function showRoomDialog(){
+  const overlay = document.getElementById('roomOverlay');
+  if (!overlay) { createRoomOverlay(); return; }
+  overlay.classList.add('active');
+  
+  document.getElementById('roomDialog').innerHTML = `
+    <h3>☁️ 云端联机</h3>
+    <p style="font-size:0.4rem;color:var(--dim);">当前服务器：${cloudUrl || '未设置'}</p>
+    ${cloudConnected ? `
+      <p style="color:var(--online);">🟢 已连接</p>
+      <button class="big-btn" onclick="sendCloud({type:'coopBattle',sender:'洛洛',enemy:'金铁兽'})">🤝协同打金铁兽</button>
+      <input id="p2pChatInput" placeholder="聊天..."><button onclick="sendCloud({type:'chat',sender:'洛洛',content:document.getElementById('p2pChatInput').value});document.getElementById('p2pChatInput').value=''">发送</button>
+      <button class="big-btn" style="background:var(--red);" onclick="disconnectCloud()">断开</button>
+    ` : `
+      <input id="cloudUrlInput" placeholder="粘贴你的 Worker 网址" value="${cloudUrl}">
+      <button class="big-btn btn-create" onclick="connectCloudServer(document.getElementById('cloudUrlInput').value)">☁️ 连接云服务器</button>
+      <p style="font-size:0.35rem;color:var(--dim);margin-top:4px;">⚠️ 两台手机连接同一个Worker网址即可联机</p>
+    `}
+    <button onclick="closeRoomDialog()">关闭</button>`;
+}
 function closeRoomDialog(){document.getElementById('roomOverlay').classList.remove('active');}
-function sendP2PChat(){const inp=document.getElementById('p2pChatInput');if(inp&&inp.value.trim()){sendP2P({type:'chat',sender:'洛洛',content:inp.value.trim()});inp.value='';}}
 function createRoomOverlay(){
-  const div=document.createElement('div');div.id='roomOverlay';div.className='modal-overlay';
-  div.innerHTML='<div class="modal-dialog" id="roomDialog"></div>';document.body.appendChild(div);
-  div.onclick=function(e){if(e.target===this)closeRoomDialog();};
+  const div = document.createElement('div'); div.id = 'roomOverlay'; div.className = 'modal-overlay';
+  div.innerHTML = '<div class="modal-dialog" id="roomDialog"></div>'; document.body.appendChild(div);
+  div.onclick = function(e) { if (e.target === this) closeRoomDialog(); };
 }
 
 // ==================== 面板 ====================
-const panelRenderers={
+const panelRenderers = {
   main:()=>{const p=D.player;let h='';h+=`<div class="stat-row"><span>❤️HP</span><span>${p.hp}/${p.maxHp}</span></div>`+barHTML('hp',p.hp/p.maxHp*100);h+=`<div class="stat-row"><span>✨经验</span><span>${p.exp}/${p.expToLevel}</span></div>`+barHTML('ex',p.exp/p.expToLevel*100);Object.values(D.warriors).forEach(w=>{h+=`<div class="clickable" onclick="openWarriorModal('${w.name}')"><span class="cname">${w.name}</span><span class="cinfo">❤️${w.hp}</span></div>`;});return h;},
   warriors:()=>{let h='';Object.values(D.warriors).forEach(w=>{h+=`<div class="clickable" onclick="openWarriorModal('${w.name}')"><span class="cname">${w.name}</span><span class="cinfo">Lv.${w.level}</span></div>`;});h+=`<div style="color:var(--red);font-size:0.36rem;">敌人</div>`;Object.entries(D.enemies).filter(([,e])=>e.alive).forEach(([k,e])=>{h+=`<div class="clickable danger" onclick="fightEnemy('${k}')"><span class="cname">${k}</span><span class="cinfo">Lv.${e.level}</span></div>`;});return h;},
   bag:()=>{let h='';Object.entries(D.bag).filter(([,v])=>v>0).forEach(([k,v])=>{const eq=D.equipmentDB[k];h+=`<div class="clickable usable" onclick="${eq?`equipItem('${k}')`:`notify('📦${k}×${v}')`}"><span class="cname">${k}</span><span class="cinfo">×${v}${eq?' [装备]':''}</span></div>`;});if(!h)h='<div style="color:var(--dim);">空空</div>';return h;},
@@ -332,7 +344,7 @@ const panelRenderers={
   craft:()=>{let h='';Object.entries(D.recipes).forEach(([n,r])=>{const can=Object.entries(r.mats).every(([k,v])=>(D.bag[k]||0)>=v);h+=`<div class="clickable${can?' usable':''}" ${can?`onclick="craftItem('${n}')"`:''}><span class="cname">🔮${n}</span><span class="cinfo">${can?'可合成':'缺材料'}</span></div>`;});return h;},
   achieve:()=>{let h='';D.allAchievements.forEach(a=>{h+=`<div class="stat-row"><span>${D.achievements.includes(a)?'✅':'🔒'}</span><span>${a}</span></div>`;});return h;},
   sign:()=>{let h='';h+=`<div class="clickable usable" onclick="dailySign()"><span class="cname">📅签到</span><span class="cinfo">${D.signIn.todaySigned?'✅':'第'+(D.signIn.days+1)+'天'}</span></div>`;return h;},
-  lobby:()=>{let h='';h+=`<div class="clickable online" onclick="showRoomDialog()"><span class="cname">${P2P.connected?'🟢联机中':'🔴点击联机'}</span></div>`;return h;}
+  lobby:()=>{let h='';h+=`<div class="clickable online" onclick="showRoomDialog()"><span class="cname">${cloudConnected?'☁️云联机中':'☁️点击联机'}</span></div>`;return h;}
 };
 
 function renderPanels(){
@@ -347,7 +359,7 @@ function showPanel(name){D.currentPanel=name;renderPanels();}
 function updateStatusBar(){
   document.getElementById('sLevel').textContent=D.player.level;document.getElementById('sHP').textContent=D.player.hp;
   document.getElementById('sATK').textContent=D.player.atk;document.getElementById('sGold').textContent=D.player.gold;
-  document.getElementById('sOnline').textContent=P2P.connected?'2':'0';document.getElementById('sRound').textContent=D.round;
+  document.getElementById('sOnline').textContent=cloudConnected?'2+':'0';document.getElementById('sRound').textContent=D.round;
 }
 function renderAll(){updateStatusBar();renderPanels();applyEquipStats();}
 
@@ -388,16 +400,19 @@ function sysChatSend(){
 // ==================== 初始化 ====================
 function init(){
   const sk=localStorage.getItem('deepseek_api_key');if(sk){D.apiKey=sk;document.getElementById('apiKeyInput').value=sk;document.getElementById('keyStatus').textContent='✅';}
-  const has=loadSave();renderAll();if(has){updateStatusBar();document.getElementById('narrative').textContent='📡 重连。点击战士名字对话，或输入行动。';}
+  const has=loadSave();renderAll();if(has){updateStatusBar();document.getElementById('narrative').textContent='📡 重连。点击🌐联机输入Worker网址。';}
   document.getElementById('saveKeyBtn').onclick=()=>{const k=document.getElementById('apiKeyInput').value.trim();if(!k.startsWith('sk-')){notify('Key以sk-开头');return;}D.apiKey=k;localStorage.setItem('deepseek_api_key',k);document.getElementById('keyStatus').textContent='✅';if(!has)handle('我是洛洛，在时光之城醒来。');};
   document.getElementById('customSendBtn').onclick=async()=>{const inp=document.getElementById('customInput');const t=inp.value.trim();if(!t)return;inp.value='';await handle(t);};
   document.getElementById('customInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('customSendBtn').click();};
   document.getElementById('btnSys').onclick=openDrawer;document.getElementById('sysChatSend').onclick=sysChatSend;document.getElementById('sysChatInput').onkeydown=e=>{if(e.key==='Enter')sysChatSend();};
+  document.getElementById('btnRoom').onclick=showRoomDialog;
   document.getElementById('btnSign').onclick=dailySign;
   document.getElementById('btnSave').onclick=()=>{autoSave();notify('💾已存档');};
-  document.getElementById('btnReset').onclick=()=>{if(confirm('重开？')){localStorage.removeItem('aeig_stable');location.reload();}};
+  document.getElementById('btnReset').onclick=()=>{if(confirm('重开？')){localStorage.removeItem('aeig_cloud');location.reload();}};
   document.querySelectorAll('.nav-btn').forEach(b=>{b.onclick=()=>showPanel(b.dataset.panel);});
   createRoomOverlay();
+  // 如果之前保存了云端网址，自动连接
+  if(cloudUrl && D.apiKey) { setTimeout(() => connectCloudServer(cloudUrl), 1500); }
   if(!has&&D.apiKey)handle('我是洛洛，在时光之城醒来。');
 }
 document.addEventListener('DOMContentLoaded',init);
